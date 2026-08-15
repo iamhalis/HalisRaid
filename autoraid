@@ -1,7 +1,7 @@
 -- ==============================================================
 --  BLOX FRUITS AUTO RAID v2 -- FLUENT UI
 --  Delta Mobile Executor Compatible
---  by Vxeze Hub AI (Added Toggle Logo & Fallback NPC)
+--  by Vxeze Hub AI (Added Minimize & Destroy Script Buttons)
 -- ==============================================================
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
@@ -17,7 +17,7 @@ local function SC(fn)
     return ok
 end
 
--- FIX: Chỉ giữ lại các Fruit có thể Thức Tỉnh (Awaken)
+-- Chỉ giữ lại các Fruit có thể Thức Tỉnh (Awaken)
 local CHIPS = {
     "Flame", "Ice", "Sand", "Dark", "Light", "Magma", 
     "Quake", "Buddha", "String", "Rumble", "Dough", "Phoenix"
@@ -113,8 +113,10 @@ local function notify(t, txt, col)
     spawn(function()
         wait(4)
         SC(function()
-            TweenService:Create(bg, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {BackgroundTransparency = 1}):Play()
-            wait(0.25); bg:Destroy()
+            if bg and bg.Parent then
+                TweenService:Create(bg, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {BackgroundTransparency = 1}):Play()
+                wait(0.25); bg:Destroy()
+            end
         end)
     end)
 end
@@ -163,7 +165,6 @@ local function findEnemy()
     return cl
 end
 
--- FIX: Keyword Cập nhật cho 12 loại trái cây
 local function getKW(n)
     local m = {
         ["Flame"] = {"flame", "mera", "fire"},
@@ -182,7 +183,6 @@ local function getKW(n)
     return m[n] or {string.lower(n)}
 end
 
--- FIX: Lấy TẤT CẢ NPC liên quan để phòng trường hợp lỗi ở NPC đầu tiên
 local function findAllNPCs(kws)
     local r = {}
     SC(function()
@@ -315,16 +315,15 @@ local function doAwaken()
     if S.Retry and raidActive then wait(S.Delay); if raidActive then doFullRaid() end end
 end
 
--- FIX: Mua Chip (Có Plan fallback chạy tới NPC Khác)
+-- Mua Chip & Giới hạn đúng tên NPC
 local function buyChip()
     phase = "buying"
     setStat("Buying " .. S.SelectedChip .. " chip...")
     notify("Chip", "Looking for Raid NPCs...", F.Accent)
     
-    -- Ưu tiên tìm Advanced Raid NPC nếu chọn Dough/Phoenix
-    local npcKws = {"Scientist", "Mysterious", "Lab"}
+    local npcKws = {"mysterious scientist"}
     if S.SelectedChip == "Dough" or S.SelectedChip == "Phoenix" then
-        npcKws = {"Advanced", "Scientist", "Mysterious"} 
+        npcKws = {"advanced fruit awakener", "mysterious scientist"} 
     end
 
     local npcs = findAllNPCs(npcKws)
@@ -336,7 +335,6 @@ local function buyChip()
                 tpTo(h.Position + h.CFrame.LookVector * 5)
                 wait(1.5)
                 
-                -- Tương tác NPC
                 SC(function()
                     for _, o in pairs(npc:GetDescendants()) do
                         if o:IsA("ProximityPrompt") then o.HoldDuration = 0; o:InputHoldEnd()
@@ -345,7 +343,6 @@ local function buyChip()
                 end)
                 wait(1.5)
 
-                -- Bấm UI
                 local chipKws = getKW(S.SelectedChip)
                 SC(function()
                     local pg = LP:FindFirstChild("PlayerGui")
@@ -363,7 +360,6 @@ local function buyChip()
                 end)
                 wait(0.5)
 
-                -- Fire Remote để chốt đơn
                 local fired = false
                 SC(function()
                     for _, o in pairs(RS:GetDescendants()) do
@@ -381,7 +377,6 @@ local function buyChip()
                 if fired then
                     notify("Chip", "Fired remotes at NPC " .. i, F.Ok)
                     wait(1)
-                    -- Sẽ tiếp tục vòng lặp chạy sang NPC khác nếu lệnh mua ở trên bị block/fail
                 end
             end
         end
@@ -482,7 +477,7 @@ Instance.new("UICorner", main).CornerRadius = UDim.new(0, 8)
 local ms = Instance.new("UIStroke")
 ms.Color = F.Brd; ms.Thickness = 1; ms.Transparency = 0.3; ms.Parent = main
 
--- === FIX: THÊM LOGO BẬT TẮT VÀO SCREENGUI ===
+-- LOGO BẬT TẮT UI
 local ToggleButton = Instance.new("ImageButton")
 ToggleButton.Parent = sg
 ToggleButton.Size = UDim2.new(0, 70, 0, 70)
@@ -491,7 +486,6 @@ ToggleButton.BackgroundTransparency = 1
 ToggleButton.Image = "rbxassetid://93595762651250"
 Instance.new("UICorner", ToggleButton).CornerRadius = UDim.new(1, 0)
 
--- Chức năng Kéo Thả Logo & Bật tắt UI
 local isDraggingLogo = false
 local startPosMouse, startPosLogo
 
@@ -506,7 +500,6 @@ end)
 ToggleButton.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         isDraggingLogo = false
-        -- Nếu di chuyển chuột < 10 pixels thì tính là click để mở UI (Không phải là đang kéo đi chỗ khác)
         if (input.Position - startPosMouse).Magnitude < 10 then
             main.Visible = not main.Visible
             bd.Visible = main.Visible
@@ -520,18 +513,17 @@ UserInput.InputChanged:Connect(function(input)
         ToggleButton.Position = UDim2.new(startPosLogo.X.Scale, startPosLogo.X.Offset + delta.X, startPosLogo.Y.Scale, startPosLogo.Y.Offset + delta.Y)
     end
 end)
--- =========================================
 
 -- Title bar
 local tbH = 48
 local tLbl = Instance.new("TextLabel")
-tLbl.Size = UDim2.new(1, -56, 0, tbH); tLbl.Position = UDim2.new(0, 16, 0, 0)
+tLbl.Size = UDim2.new(1, -90, 0, tbH); tLbl.Position = UDim2.new(0, 16, 0, 0)
 tLbl.BackgroundTransparency = 1; tLbl.Text = "AUTO RAID v2"
 tLbl.TextColor3 = F.Text1; tLbl.TextSize = 16
 tLbl.Font = Enum.Font.GothamBold; tLbl.TextXAlignment = Enum.TextXAlignment.Left; tLbl.Parent = main
 
 local sub = Instance.new("TextLabel")
-sub.Size = UDim2.new(1, -56, 0, 16); sub.Position = UDim2.new(0, 16, 0, 30)
+sub.Size = UDim2.new(1, -90, 0, 16); sub.Position = UDim2.new(0, 16, 0, 30)
 sub.BackgroundTransparency = 1; sub.Text = "Fluent Design"; sub.TextColor3 = F.Text3
 sub.TextSize = 11; sub.Font = Enum.Font.Gotham; sub.TextXAlignment = Enum.TextXAlignment.Left; sub.Parent = main
 
@@ -539,18 +531,43 @@ local div1 = Instance.new("Frame")
 div1.Size = UDim2.new(1, -24, 0, 1); div1.Position = UDim2.new(0, 12, 0, tbH - 1)
 div1.BackgroundColor3 = F.Brd; div1.BorderSizePixel = 0; div1.Parent = main
 
--- Close button
+-- === 1. NÚT ẨN UI (Minimize - Dấu Trừ) ===
+local minBtn = Instance.new("TextButton")
+minBtn.Size = UDim2.new(0, 32, 0, 32); minBtn.Position = UDim2.new(1, -76, 0, 8)
+minBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50); minBtn.BackgroundTransparency = 0.5
+minBtn.BorderSizePixel = 0; minBtn.Text = "-"; minBtn.TextColor3 = F.Text2
+minBtn.TextSize = 16; minBtn.Font = Enum.Font.GothamBold; minBtn.AutoButtonColor = false; minBtn.Parent = main
+Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 16)
+
+minBtn.MouseButton1Click:Connect(function()
+    main.Visible = false
+    bd.Visible = false
+    notify("Hide", "UI hidden. Tap the Logo to reopen.", F.Warn)
+end)
+minBtn.MouseEnter:Connect(function() TweenService:Create(minBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 80, 80), BackgroundTransparency = 0.2, TextColor3 = Color3.new(1, 1, 1)}):Play() end)
+minBtn.MouseLeave:Connect(function() TweenService:Create(minBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 50, 50), BackgroundTransparency = 0.5, TextColor3 = F.Text2}):Play() end)
+
+-- === 2. NÚT XÓA SCRIPT (Destroy - Nút X) ===
 local clBtn = Instance.new("TextButton")
 clBtn.Size = UDim2.new(0, 32, 0, 32); clBtn.Position = UDim2.new(1, -40, 0, 8)
 clBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50); clBtn.BackgroundTransparency = 0.5
-clBtn.BorderSizePixel = 0; clBtn.Text = "\227"; clBtn.TextColor3 = F.Text2
+clBtn.BorderSizePixel = 0; clBtn.Text = "X"; clBtn.TextColor3 = F.Text2
 clBtn.TextSize = 14; clBtn.Font = Enum.Font.GothamBold; clBtn.AutoButtonColor = false; clBtn.Parent = main
 Instance.new("UICorner", clBtn).CornerRadius = UDim.new(0, 16)
 
 clBtn.MouseButton1Click:Connect(function()
-    main.Visible = false
-    bd.Visible = false
-    notify("Hide", "UI hidden. Tap the Logo to reopen.", F.Warn)
+    stopAll() -- Dừng vòng lặp auto
+    S.FullAuto = false; S.BuyChip = false; S.StartRaid = false; S.DoRaid = false
+    
+    if sg then sg:Destroy() end -- Xóa Menu chính & Logo
+    
+    -- Xóa các thông báo Notification
+    SC(function()
+        local coreGui = game:GetService("CoreGui")
+        local pg = LP:FindFirstChild("PlayerGui")
+        if coreGui and coreGui:FindFirstChild("AR2N") then coreGui.AR2N:Destroy() end
+        if pg and pg:FindFirstChild("AR2N") then pg.AR2N:Destroy() end
+    end)
 end)
 clBtn.MouseEnter:Connect(function() TweenService:Create(clBtn, TweenInfo.new(0.15), {BackgroundColor3 = F.Bad, BackgroundTransparency = 0.2, TextColor3 = Color3.new(1, 1, 1)}):Play() end)
 clBtn.MouseLeave:Connect(function() TweenService:Create(clBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 50, 50), BackgroundTransparency = 0.5, TextColor3 = F.Text2}):Play() end)
@@ -560,7 +577,7 @@ local closeCurrentDD = nil
 -- Drag on title area
 local drag, dStart, sPos = false
 local dragArea = Instance.new("Frame")
-dragArea.Size = UDim2.new(1, -40, 0, tbH); dragArea.BackgroundTransparency = 1
+dragArea.Size = UDim2.new(1, -80, 0, tbH); dragArea.BackgroundTransparency = 1
 dragArea.Position = UDim2.new(0, 0, 0, 0); dragArea.Parent = main
 
 dragArea.InputBegan:Connect(function(i)
@@ -889,4 +906,4 @@ Instance.new("UICorner", wm).CornerRadius = UDim.new(0, 4)
 
 -- === STARTUP ===
 notify("Auto Raid v2", "Loaded successfully!", F.Ok)
-notify("Tip", "Use the floating logo to hide/show UI", F.Accent)
+notify("Tip", "Use Logo to hide. Use X to kill script.", F.Accent)
