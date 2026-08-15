@@ -1,7 +1,7 @@
 -- ==============================================================
---  BLOX FRUITS AUTO RAID v4 -- FLUENT UI
+--  BLOX FRUITS AUTO RAID v5 -- FLUENT UI
 --  Delta / Arceus / CodeX Mobile Executor Compatible
---  by Vxeze Hub AI (Rewrite Core Farm & Raid Logic)
+--  by Vxeze Hub AI (Fixed Anti-cheat Tween 250 Speed & Raid Start)
 -- ==============================================================
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
@@ -13,7 +13,7 @@ local VirtualUser = game:GetService("VirtualUser")
 
 local function SC(fn)
     local ok, err = pcall(fn)
-    if not ok then warn("[AR4] " .. tostring(err)) end
+    if not ok then warn("[AR5] " .. tostring(err)) end
     return ok
 end
 
@@ -107,24 +107,6 @@ end
 
 local function setStat(txt) if statusLbl then statusLbl.Text = txt end end
 
--- Helpers & Movement
-local function tpTo(pos)
-    SC(function()
-        local c = LP.Character
-        if not c then return end
-        local h = c:FindFirstChild("HumanoidRootPart")
-        if not h then return end
-        local d = (h.Position - pos).magnitude
-        if d > 250 then
-            h.CFrame = CFrame.new(pos)
-        else
-            local tw = TweenService:Create(h, TweenInfo.new(d / 150, Enum.EasingStyle.Linear), {CFrame = CFrame.new(pos)})
-            tw:Play()
-            tw.Completed:wait()
-        end
-    end)
-end
-
 -- Bật/Tắt Noclip chống kẹt tường
 local function setNoclip(state)
     if state then
@@ -140,6 +122,28 @@ local function setNoclip(state)
     else
         if noclipConnection then noclipConnection:Disconnect(); noclipConnection = nil end
     end
+end
+
+-- === LOGIC TWEEN HOÀN TOÀN TỐC ĐỘ 250 ===
+-- Không dùng CFrame dịch chuyển tức thời để chống Anti-Cheat kéo lùi
+local function tweenTo(pos)
+    local success = false
+    SC(function()
+        local c = LP.Character
+        if not c then return end
+        local h = c:FindFirstChild("HumanoidRootPart")
+        if not h then return end
+        
+        local d = (h.Position - pos).magnitude
+        local speed = 250 -- Tốc độ cực hạn an toàn của Blox Fruits
+        local t = d / speed
+        
+        local tw = TweenService:Create(h, TweenInfo.new(t, Enum.EasingStyle.Linear), {CFrame = CFrame.new(pos)})
+        tw:Play()
+        tw.Completed:Wait()
+        success = true
+    end)
+    return success
 end
 
 -- Tìm quái vật
@@ -183,10 +187,10 @@ local function sk(k)
 end
 
 -- =========================================
--- LOGIC 1: FARM RAID (ĐƯỢC VIẾT LẠI HOÀN TOÀN)
+-- LOGIC 1: FARM RAID & QUA ĐẢO BẰNG TWEEN
 -- =========================================
 local function combat()
-    setNoclip(true) -- Bật xuyên tường
+    setNoclip(true) -- Luôn bật xuyên tường khi đang đánh/bay đảo
     
     -- Tự động bật Haki (Buso)
     SC(function()
@@ -204,26 +208,28 @@ local function combat()
                 local th = target:FindFirstChild("HumanoidRootPart")
                 
                 if mh and th then
-                    -- Bay lơ lửng TRÊN ĐẦU quái (khoảng cách an toàn) và nhìn chéo xuống
                     local safeHeight = S.Radius > 20 and 20 or S.Radius
                     local topPos = th.Position + Vector3.new(0, safeHeight, 0)
+                    local dist = (mh.Position - topPos).Magnitude
                     
-                    if (mh.Position - topPos).Magnitude > 30 then
-                        tpTo(topPos)
+                    if dist > 50 then
+                        -- Xa hơn 50 studs (Quái mới sinh ở Đảo kế tiếp), dùng Tween 250 speed để lướt qua
+                        tweenTo(topPos)
                     else
+                        -- Đã tới gần đảo, bám sát trên đầu quái
                         mh.CFrame = CFrame.new(topPos, th.Position)
+                        
+                        -- Attack
+                        if S.M1 then m1(); wait(S.M1Delay) end
+                        if #S.Skills > 0 then
+                            sk(S.Skills[sIdx])
+                            sIdx = sIdx + 1; if sIdx > #S.Skills then sIdx = 1 end
+                            wait(S.SkillDelay)
+                        end
                     end
                 end
-                
-                -- Attack
-                if S.M1 then m1(); wait(S.M1Delay) end
-                if #S.Skills > 0 then
-                    sk(S.Skills[sIdx])
-                    sIdx = sIdx + 1; if sIdx > #S.Skills then sIdx = 1 end
-                    wait(S.SkillDelay)
-                end
             else
-                -- Không thấy quái -> Tới cửa tiếp theo hoặc Awakening
+                -- Không thấy quái -> Đợi hoặc Awakening
                 local hasAw = false
                 SC(function()
                     local pg = LP:FindFirstChild("PlayerGui")
@@ -243,7 +249,7 @@ local function combat()
                     setStat("Awakening phase...")
                     notify("Awaken", "Found awaken UI!", F.Warn)
                 end
-                wait(0.5)
+                wait(0.5) -- Cho game thời gian load quái ở đảo tiếp theo
             end
         end)
         wait(0.1)
@@ -252,32 +258,13 @@ local function combat()
 end
 
 -- =========================================
--- LOGIC 2: BUY CHIP (ĐƯỢC VIẾT LẠI HOÀN TOÀN)
+-- LOGIC 2: BUY CHIP 
 -- =========================================
 local function buyChip()
     phase = "buying"
     setStat("Buying " .. S.SelectedChip .. " chip...")
-    notify("Chip", "Buying Chip Via Remotes...", F.Accent)
+    notify("Chip", "Finding Raid NPC...", F.Accent)
     
-    -- CÁCH 1: Sử dụng chuẩn Direct Remote của Blox Fruits (Nhanh, không cần di chuyển)
-    local remoteSuccess = SC(function()
-        local commF = RS:FindFirstChild("Remotes") and RS.Remotes:FindFirstChild("CommF_")
-        if commF then
-            -- Mua thông qua remote
-            local chipType = S.SelectedChip .. " Microchip"
-            local res = commF:InvokeServer("BuyMicrochip", chipType) 
-            if not res then res = commF:InvokeServer("RaidsNpc", "Select", S.SelectedChip) end
-            
-            notify("Chip", "Remote executed!", F.Ok)
-            return true
-        end
-        return false
-    end)
-
-    if remoteSuccess then wait(1.5); return end
-
-    -- CÁCH 2: Đi tìm Physical NPC (Fallback nếu game lỡ đổi Remote)
-    notify("Chip", "Remote Failed, finding Physical NPC...", F.Warn)
     local npcKws = {"mysterious scientist"}
     if S.SelectedChip == "Dough" or S.SelectedChip == "Phoenix" then npcKws = {"advanced fruit awakener", "mysterious scientist"} end
 
@@ -295,8 +282,9 @@ local function buyChip()
         local npc = npcs[1]
         local h = npc:FindFirstChild("HumanoidRootPart") or npc:FindFirstChildWhichIsA("BasePart")
         if h then
-            tpTo(h.Position + h.CFrame.LookVector * 5)
-            wait(1.5)
+            setNoclip(true)
+            tweenTo(h.Position + h.CFrame.LookVector * 5)
+            wait(1)
             
             -- Ép mở UI của NPC
             SC(function()
@@ -305,7 +293,7 @@ local function buyChip()
                     elseif o:IsA("ClickDetector") then o.MouseClick:Fire() end
                 end
             end)
-            wait(1)
+            wait(1.5)
 
             -- Tìm và Click nút
             local chipKws = getKW(S.SelectedChip)
@@ -320,6 +308,18 @@ local function buyChip()
                     end
                 end
             end)
+            wait(0.5)
+            
+            -- Chốt Remote
+            SC(function()
+                local commF = RS:FindFirstChild("Remotes") and RS.Remotes:FindFirstChild("CommF_")
+                if commF then
+                    commF:InvokeServer("BuyMicrochip", S.SelectedChip .. " Microchip") 
+                    commF:InvokeServer("RaidsNpc", "Select", S.SelectedChip)
+                end
+            end)
+            notify("Chip", "Bought Chip successfully!", F.Ok)
+            setNoclip(false)
         end
     else
         notify("Chip", "No Raid NPC found in this map!", F.Bad)
@@ -328,45 +328,57 @@ local function buyChip()
 end
 
 -- =========================================
--- LOGIC 3: START RAID (ĐƯỢC VIẾT LẠI HOÀN TOÀN)
+-- LOGIC 3: START RAID (VẬT LÝ = TWEEN TỚI NÚT)
 -- =========================================
 local function startRaid()
     phase = "entering"; setStat("Starting raid...")
-    notify("Raid", "Attempting to Start Raid...", F.Accent)
+    notify("Raid", "Tweening to Raid Button...", F.Accent)
 
-    -- CÁCH 1: Bắn Remote Game 
-    local started = SC(function()
-        local commF = RS:FindFirstChild("Remotes") and RS.Remotes:FindFirstChild("CommF_")
-        if commF then
-            commF:InvokeServer("StartRaid")
-            return true
-        end
-    end)
-    
-    if started then wait(2) end
+    local mh = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if not mh then return end
 
-    -- CÁCH 2: Tìm thiết bị trong phòng lab (Tube/Button)
-    notify("Raid", "Entering Raid Tube...", F.Warn)
+    local closestBtn = nil
+    local closestDist = math.huge
+
+    -- Quét tìm khối "Button" (Nút khởi động) nằm gần nhất
     SC(function()
-        local mh = LP.Character:FindFirstChild("HumanoidRootPart")
         for _, o in pairs(workspace:GetDescendants()) do
-            if o:IsA("BasePart") then
-                local n = string.lower(o.Name)
-                if n == "raidtube" or n == "raidentrance" or string.find(n, "darkarena") then
-                    if mh then mh.CFrame = o.CFrame end
-                    local pp = o:FindFirstChildWhichIsA("ProximityPrompt")
-                    if pp then pp.HoldDuration = 0; pp:InputHoldEnd() end
-                    local cd = o:FindFirstChildWhichIsA("ClickDetector")
-                    if cd then cd.MouseClick:Fire() end
-                    return
+            if o:IsA("BasePart") and string.find(string.lower(o.Name), "button") then
+                local cd = o:FindFirstChildWhichIsA("ClickDetector")
+                if cd then
+                    local d = (o.Position - mh.Position).Magnitude
+                    -- Chắc chắn lấy nút trong bán kính 600 studs (tránh bay nhầm sang đảo khác)
+                    if d < 600 and d < closestDist then
+                        closestDist = d
+                        closestBtn = o
+                    end
                 end
             end
         end
     end)
+
+    if closestBtn then
+        setNoclip(true)
+        -- Tween tới thẳng buồng chứa nút Start (đứng cách 3 studs)
+        tweenTo(closestBtn.Position + Vector3.new(0, 3, 0))
+        wait(0.5)
+        
+        -- Kích hoạt vật lý
+        local cd = closestBtn:FindFirstChildWhichIsA("ClickDetector")
+        if cd then 
+            cd.MouseClick:Fire() 
+            notify("Raid", "Activated Physical Button!", F.Ok)
+        end
+        setNoclip(false)
+    else
+        notify("Raid", "Could not find physical Button nearby!", F.Bad)
+    end
     wait(2)
 end
 
+-- =========================================
 -- Awakening logic
+-- =========================================
 local function doAwaken()
     notify("Awaken", "Looking for awaken UI...", F.Warn)
     local att = 0
@@ -470,11 +482,11 @@ end)
 local tbH = 48
 local tLbl = Instance.new("TextLabel")
 tLbl.Size = UDim2.new(1, -90, 0, tbH); tLbl.Position = UDim2.new(0, 16, 0, 0); tLbl.BackgroundTransparency = 1
-tLbl.Text = "AUTO RAID v4"; tLbl.TextColor3 = F.Text1; tLbl.TextSize = 16; tLbl.Font = Enum.Font.GothamBold; tLbl.TextXAlignment = Enum.TextXAlignment.Left; tLbl.Parent = main
+tLbl.Text = "AUTO RAID v5"; tLbl.TextColor3 = F.Text1; tLbl.TextSize = 16; tLbl.Font = Enum.Font.GothamBold; tLbl.TextXAlignment = Enum.TextXAlignment.Left; tLbl.Parent = main
 
 local sub = Instance.new("TextLabel")
 sub.Size = UDim2.new(1, -90, 0, 16); sub.Position = UDim2.new(0, 16, 0, 30); sub.BackgroundTransparency = 1
-sub.Text = "Pro Auto-Farm Logic"; sub.TextColor3 = F.Text3; sub.TextSize = 11; sub.Font = Enum.Font.Gotham; sub.TextXAlignment = Enum.TextXAlignment.Left; sub.Parent = main
+sub.Text = "Strict Tween 250 Logic"; sub.TextColor3 = F.Text3; sub.TextSize = 11; sub.Font = Enum.Font.Gotham; sub.TextXAlignment = Enum.TextXAlignment.Left; sub.Parent = main
 
 local div1 = Instance.new("Frame")
 div1.Size = UDim2.new(1, -24, 0, 1); div1.Position = UDim2.new(0, 12, 0, tbH - 1); div1.BackgroundColor3 = F.Brd; div1.BorderSizePixel = 0; div1.Parent = main
@@ -773,9 +785,9 @@ btn("STOP EVERYTHING", F.Bad, function() stopAll(); notify("Stop", "All stopped"
 -- === WATERMARK ===
 local wm = Instance.new("TextLabel")
 wm.Size = UDim2.new(0, 200, 0, 18); wm.Position = UDim2.new(0, 10, 1, -26); wm.BackgroundColor3 = F.Bg; wm.BackgroundTransparency = 0.4
-wm.Text = "Auto Raid v4  |  Vxeze AI"; wm.TextColor3 = F.Text3; wm.TextSize = 10; wm.Font = Enum.Font.GothamBold; wm.TextXAlignment = Enum.TextXAlignment.Left; wm.Parent = sg
+wm.Text = "Auto Raid v5  |  Vxeze AI"; wm.TextColor3 = F.Text3; wm.TextSize = 10; wm.Font = Enum.Font.GothamBold; wm.TextXAlignment = Enum.TextXAlignment.Left; wm.Parent = sg
 Instance.new("UICorner", wm).CornerRadius = UDim.new(0, 4)
 
 -- === STARTUP ===
-notify("Auto Raid v4", "Loaded successfully!", F.Ok)
-notify("Tip", "Added Auto-Noclip & Remote Execution", F.Accent)
+notify("Auto Raid v5", "Loaded successfully!", F.Ok)
+notify("Tip", "Tween 250 Speed - Fixed Raid Teleport Issues", F.Accent)
