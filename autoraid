@@ -1,3 +1,8 @@
+-- ==============================================================
+--  BLOX FRUITS AUTO RAID v2 -- FLUENT UI
+--  Delta Mobile Executor Compatible
+--  by Vxeze Hub AI (Fixed Dropdown & Outside Click)
+-- ==============================================================
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -56,251 +61,314 @@ local F = {
 -- Notifications (Fluent - bottom right)
 local nFrame = nil
 local function mkN()
-    local sg = Instance.new("ScreenGui")
-    sg.Name="AR2N"; sg.ResetOnSpawn=false
-    sg.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-    SC(function() sg.Parent=game:GetService("CoreGui") end)
-    if not sg.Parent then sg.Parent=LP:WaitForChild("PlayerGui") end
-    nFrame=Instance.new("Frame")
-    nFrame.Size=UDim2.new(0,280,0,320)
-    nFrame.Position=UDim2.new(1,-290,1,-330)
-    nFrame.BackgroundTransparency=1; nFrame.Parent=sg
-    local ly=Instance.new("UIListLayout")
-    ly.SortOrder=Enum.SortOrder.LayoutOrder
-    ly.Padding=UDim.new(0,6)
-    ly.VerticalAlignment=Enum.VerticalAlignment.Bottom
-    ly.Parent=nFrame
+    local sgNotify = Instance.new("ScreenGui")
+    sgNotify.Name = "AR2N"
+    sgNotify.ResetOnSpawn = false
+    sgNotify.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    SC(function() sgNotify.Parent = game:GetService("CoreGui") end)
+    if not sgNotify.Parent then sgNotify.Parent = LP:WaitForChild("PlayerGui") end
+    
+    nFrame = Instance.new("Frame")
+    nFrame.Size = UDim2.new(0, 280, 0, 320)
+    nFrame.Position = UDim2.new(1, -290, 1, -330)
+    nFrame.BackgroundTransparency = 1
+    nFrame.Parent = sgNotify
+    
+    local ly = Instance.new("UIListLayout")
+    ly.SortOrder = Enum.SortOrder.LayoutOrder
+    ly.Padding = UDim.new(0, 6)
+    ly.VerticalAlignment = Enum.VerticalAlignment.Bottom
+    ly.Parent = nFrame
 end
 
-local function notify(t,txt,col)
+local function notify(t, txt, col)
     if not S.Notifs then return end
     if not nFrame then SC(mkN) end
     if not nFrame then return end
-    local bg=Instance.new("Frame")
-    bg.Size=UDim2.new(1,0,0,52)
-    bg.BackgroundColor3=F.Card; bg.BackgroundTransparency=0.05
-    bg.BorderSizePixel=0; bg.Parent=nFrame
-    Instance.new("UICorner",bg).CornerRadius=UDim.new(0,6)
-    local st=Instance.new("UIStroke")
-    st.Color=F.Brd; st.Thickness=1; st.Transparency=0.5
-    st.Parent=bg
-    local bar=Instance.new("Frame")
-    bar.Size=UDim2.new(0,3,0.5,0)
-    bar.Position=UDim2.new(0,10,0.25,0)
-    bar.BackgroundColor3=col or F.Accent; bar.BorderSizePixel=0
-    bar.Parent=bg
-    Instance.new("UICorner",bar).CornerRadius=UDim.new(0,2)
-    local tl=Instance.new("TextLabel")
-    tl.Size=UDim2.new(1,-28,0,16); tl.Position=UDim2.new(0,20,0,5)
-    tl.BackgroundTransparency=1; tl.Text=t
-    tl.TextColor3=col or F.Accent; tl.TextSize=12
-    tl.Font=Enum.Font.GothamBold; tl.TextXAlignment=Enum.TextXAlignment.Left
-    tl.Parent=bg
-    local tx=Instance.new("TextLabel")
-    tx.Size=UDim2.new(1,-28,0,16); tx.Position=UDim2.new(0,20,0,26)
-    tx.BackgroundTransparency=1; tx.Text=txt
-    tx.TextColor3=F.Text2; tx.TextSize=11
-    tx.Font=Enum.Font.Gotham; tx.TextXAlignment=Enum.TextXAlignment.Left
-    tx.TextTruncate=Enum.TextTruncate.AtEnd
-    tx.Parent=bg
-    spawn(function() wait(4) SC(function()
-        TweenService:Create(bg,TweenInfo.new(0.25,Enum.EasingStyle.Quad),{BackgroundTransparency=1}):Play()
-        wait(0.25); bg:Destroy()
-    end) end)
+    
+    local bg = Instance.new("Frame")
+    bg.Size = UDim2.new(1, 0, 0, 52)
+    bg.BackgroundColor3 = F.Card
+    bg.BackgroundTransparency = 0.05
+    bg.BorderSizePixel = 0
+    bg.Parent = nFrame
+    Instance.new("UICorner", bg).CornerRadius = UDim.new(0, 6)
+    
+    local st = Instance.new("UIStroke")
+    st.Color = F.Brd
+    st.Thickness = 1
+    st.Transparency = 0.5
+    st.Parent = bg
+    
+    local bar = Instance.new("Frame")
+    bar.Size = UDim2.new(0, 3, 0.5, 0)
+    bar.Position = UDim2.new(0, 10, 0.25, 0)
+    bar.BackgroundColor3 = col or F.Accent
+    bar.BorderSizePixel = 0
+    bar.Parent = bg
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 2)
+    
+    local tl = Instance.new("TextLabel")
+    tl.Size = UDim2.new(1, -28, 0, 16)
+    tl.Position = UDim2.new(0, 20, 0, 5)
+    tl.BackgroundTransparency = 1
+    tl.Text = t
+    tl.TextColor3 = col or F.Accent
+    tl.TextSize = 12
+    tl.Font = Enum.Font.GothamBold
+    tl.TextXAlignment = Enum.TextXAlignment.Left
+    tl.Parent = bg
+    
+    local tx = Instance.new("TextLabel")
+    tx.Size = UDim2.new(1, -28, 0, 16)
+    tx.Position = UDim2.new(0, 20, 0, 26)
+    tx.BackgroundTransparency = 1
+    tx.Text = txt
+    tx.TextColor3 = F.Text2
+    tx.TextSize = 11
+    tx.Font = Enum.Font.Gotham
+    tx.TextXAlignment = Enum.TextXAlignment.Left
+    tx.TextTruncate = Enum.TextTruncate.AtEnd
+    tx.Parent = bg
+    
+    spawn(function()
+        wait(4)
+        SC(function()
+            TweenService:Create(bg, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {BackgroundTransparency = 1}):Play()
+            wait(0.25)
+            bg:Destroy()
+        end)
+    end)
 end
 
-local function setStat(txt) if statusLbl then statusLbl.Text=txt end end
+local function setStat(txt)
+    if statusLbl then statusLbl.Text = txt end
+end
 
 -- Helpers
 local function findNPC(kws)
-    local r=nil
+    local r = nil
     SC(function()
-        for _,o in pairs(workspace:GetDescendants()) do
+        for _, o in pairs(workspace:GetDescendants()) do
             if o:IsA("Model") then
-                local n=string.lower(o.Name)
-                for _,k in pairs(kws) do
-                    if string.find(n,string.lower(k)) then
+                local n = string.lower(o.Name)
+                for _, k in pairs(kws) do
+                    if string.find(n, string.lower(k)) then
                         if o:FindFirstChild("HumanoidRootPart") or o:FindFirstChildWhichIsA("BasePart") then
-                            r=o; return
+                            r = o
+                            return
                         end
                     end
                 end
             end
         end
-    end) return r
+    end)
+    return r
 end
 
 local function tpTo(pos)
     SC(function()
-        local c=LP.Character if not c then return end
-        local h=c:FindFirstChild("HumanoidRootPart") if not h then return end
-        local d=(h.Position-pos).magnitude
-        if d>300 then h.CFrame=CFrame.new(pos)
+        local c = LP.Character
+        if not c then return end
+        local h = c:FindFirstChild("HumanoidRootPart")
+        if not h then return end
+        local d = (h.Position - pos).magnitude
+        if d > 300 then
+            h.CFrame = CFrame.new(pos)
         else
-            local tw=TweenService:Create(h,TweenInfo.new(math.min(d/80,4),Enum.EasingStyle.Linear),{CFrame=CFrame.new(pos)})
-            tw:Play(); tw.Completed:wait()
+            local tw = TweenService:Create(h, TweenInfo.new(math.min(d / 80, 4), Enum.EasingStyle.Linear), {CFrame = CFrame.new(pos)})
+            tw:Play()
+            tw.Completed:wait()
         end
     end)
 end
 
 local function findEnemy()
-    local c=LP.Character if not c then return nil end
-    local mh=c:FindFirstChild("HumanoidRootPart") if not mh then return nil end
-    local cl,cd=nil,S.Radius
+    local c = LP.Character
+    if not c then return nil end
+    local mh = c:FindFirstChild("HumanoidRootPart")
+    if not mh then return nil end
+    local cl, cd = nil, S.Radius
     SC(function()
-        for _,o in pairs(workspace:GetDescendants()) do
+        for _, o in pairs(workspace:GetDescendants()) do
             if o:IsA("Model") then
-                local hm=o:FindFirstChildOfClass("Humanoid")
-                if hm and hm.Health>0 and o~=c then
+                local hm = o:FindFirstChildOfClass("Humanoid")
+                if hm and hm.Health > 0 and o ~= c then
                     if not Players:GetPlayerFromCharacter(o) then
-                        local h=o:FindFirstChild("HumanoidRootPart")
+                        local h = o:FindFirstChild("HumanoidRootPart")
                         if h then
-                            local d=(h.Position-mh.Position).magnitude
-                            if d<cd then cd=d; cl=o end
+                            local d = (h.Position - mh.Position).magnitude
+                            if d < cd then
+                                cd = d
+                                cl = o
+                            end
                         end
                     end
                 end
             end
         end
-    end) return cl
+    end)
+    return cl
 end
 
 local function getKW(n)
-    local m={
-        ["Buddha"]={"buddha"},
-        ["Mera (Flame)"]={"flame","mera","fire"},
-        ["Ice"]={"ice","freeze","hie"},
-        ["Dark"]={"dark"},
-        ["Quake"]={"quake","gura"},
-        ["Light"]={"light","pika"},
-        ["Magma"]={"magma","magu"},
-        ["Rumble"]={"rumble","goro"},
-        ["String"]={"string"},
-        ["Phoenix"]={"phoenix"},
-        ["Gravity"]={"gravity","zushi"},
-        ["Dough"]={"dough","mochi"},
-        ["Venom"]={"venom","doku"},
-        ["Control"]={"control"},
-        ["Spirit"]={"spirit"},
-        ["Shadow"]={"shadow"},
-        ["Dragon"]={"dragon"},
-        ["Leopard"]={"leopard"},
-        ["Sound"]={"sound"},
-        ["Blaze"]={"blaze"},
-        ["Tusk"]={"tusk"},
-        ["Mammoth"]={"mammoth"},
-        ["Kitsune"]={"kitsune","fox"},
+    local m = {
+        ["Buddha"] = {"buddha"},
+        ["Mera (Flame)"] = {"flame", "mera", "fire"},
+        ["Ice"] = {"ice", "freeze", "hie"},
+        ["Dark"] = {"dark"},
+        ["Quake"] = {"quake", "gura"},
+        ["Light"] = {"light", "pika"},
+        ["Magma"] = {"magma", "magu"},
+        ["Rumble"] = {"rumble", "goro"},
+        ["String"] = {"string"},
+        ["Phoenix"] = {"phoenix"},
+        ["Gravity"] = {"gravity", "zushi"},
+        ["Dough"] = {"dough", "mochi"},
+        ["Venom"] = {"venom", "doku"},
+        ["Control"] = {"control"},
+        ["Spirit"] = {"spirit"},
+        ["Shadow"] = {"shadow"},
+        ["Dragon"] = {"dragon"},
+        ["Leopard"] = {"leopard"},
+        ["Sound"] = {"sound"},
+        ["Blaze"] = {"blaze"},
+        ["Tusk"] = {"tusk"},
+        ["Mammoth"] = {"mammoth"},
+        ["Kitsune"] = {"kitsune", "fox"},
     }
     return m[n] or {string.lower(n)}
 end
 
 -- Combat
-local sIdx=1
-local function m1() SC(function()
-    VirtualUser:CaptureController(); wait(0.01)
-    VirtualUser:ClickButton1(Vector2.new())
-end) end
-local function sk(k) SC(function()
-    VirtualUser:SetKeyDown(Enum.KeyCode[k]); wait(0.05)
-    VirtualUser:SetKeyUp(Enum.KeyCode[k])
-end) end
+local sIdx = 1
+local function m1()
+    SC(function()
+        VirtualUser:CaptureController()
+        wait(0.01)
+        VirtualUser:ClickButton1(Vector2.new())
+    end)
+end
+
+local function sk(k)
+    SC(function()
+        VirtualUser:SetKeyDown(Enum.KeyCode[k])
+        wait(0.05)
+        VirtualUser:SetKeyUp(Enum.KeyCode[k])
+    end)
+end
 
 local function combat()
-    while raidActive and phase=="fighting" do
+    while raidActive and phase == "fighting" do
         SC(function()
-            local t=findEnemy()
+            local t = findEnemy()
             if t then
-                local mh=LP.Character:FindFirstChild("HumanoidRootPart")
-                local th=t:FindFirstChild("HumanoidRootPart")
+                local mh = LP.Character:FindFirstChild("HumanoidRootPart")
+                local th = t:FindFirstChild("HumanoidRootPart")
                 if mh and th then
-                    mh.CFrame=CFrame.new(mh.Position,th.Position)
-                    if (mh.Position-th.Position).magnitude>8 then
-                        tpTo(th.Position+Vector3.new(0,0,5))
+                    mh.CFrame = CFrame.new(mh.Position, th.Position)
+                    if (mh.Position - th.Position).magnitude > 8 then
+                        tpTo(th.Position + Vector3.new(0, 0, 5))
                     end
                 end
-                if S.M1 then m1(); wait(S.M1Delay) end
-                if #S.Skills>0 then
+                if S.M1 then
+                    m1()
+                    wait(S.M1Delay)
+                end
+                if #S.Skills > 0 then
                     sk(S.Skills[sIdx])
-                    sIdx=sIdx+1
-                    if sIdx>#S.Skills then sIdx=1 end
+                    sIdx = sIdx + 1
+                    if sIdx > #S.Skills then sIdx = 1 end
                     wait(S.SkillDelay)
                 end
             else
-                local hasAw=false
+                local hasAw = false
                 SC(function()
-                    local pg=LP:FindFirstChild("PlayerGui")
+                    local pg = LP:FindFirstChild("PlayerGui")
                     if pg then
-                        for _,o in pairs(pg:GetDescendants()) do
+                        for _, o in pairs(pg:GetDescendants()) do
                             if (o:IsA("TextButton") or o:IsA("ImageButton")) and o.Visible then
-                                local tx=""; if o.Text then tx=string.lower(o.Text) end
-                                local n=string.lower(o.Name)
-                                if string.find(tx,"awaken") or string.find(tx,"click") or string.find(n,"awaken") then
-                                    hasAw=true; break
+                                local tx = ""
+                                if o.Text then tx = string.lower(o.Text) end
+                                local n = string.lower(o.Name)
+                                if string.find(tx, "awaken") or string.find(tx, "click") or string.find(n, "awaken") then
+                                    hasAw = true
+                                    break
                                 end
                             end
                         end
                     end
                 end)
                 if hasAw and S.Awaken then
-                    phase="awakening"
+                    phase = "awakening"
                     setStat("Awakening phase...")
-                    notify("Awaken","Found awaken button!",F.Warn)
+                    notify("Awaken", "Found awaken button!", F.Warn)
                 end
                 wait(0.5)
             end
-        end) wait(0.1)
+        end)
+        wait(0.1)
     end
 end
 
 -- Awakening
 local function doAwaken()
-    notify("Awaken","Looking for awaken UI...",F.Warn)
-    local att=0
-    local kw={}
-    if S.SelectedAwaken~="Current Fruit" then kw=getKW(S.SelectedAwaken) end
-    while raidActive and att<180 and phase=="awakening" do
-        att=att+1
+    notify("Awaken", "Looking for awaken UI...", F.Warn)
+    local att = 0
+    local kw = {}
+    if S.SelectedAwaken ~= "Current Fruit" then kw = getKW(S.SelectedAwaken) end
+    while raidActive and att < 180 and phase == "awakening" do
+        att = att + 1
         SC(function()
-            local pg=LP:FindFirstChild("PlayerGui")
+            local pg = LP:FindFirstChild("PlayerGui")
             if pg then
-                for _,o in pairs(pg:GetDescendants()) do
+                for _, o in pairs(pg:GetDescendants()) do
                     if (o:IsA("TextButton") or o:IsA("ImageButton")) and o.Visible then
-                        local tx=""; if o.Text then tx=string.lower(o.Text) end
-                        local n=string.lower(o.Name)
-                        if #kw>0 then
-                            for _,k in pairs(kw) do
-                                if string.find(tx,k) then
+                        local tx = ""
+                        if o.Text then tx = string.lower(o.Text) end
+                        local n = string.lower(o.Name)
+                        if #kw > 0 then
+                            for _, k in pairs(kw) do
+                                if string.find(tx, k) then
                                     o.MouseButton1Click:Fire()
-                                    notify("Awaken","Clicked: "..o.Text,F.Ok)
-                                    wait(0.5) return
+                                    notify("Awaken", "Clicked: " .. o.Text, F.Ok)
+                                    wait(0.5)
+                                    return
                                 end
                             end
                         end
-                        if string.find(tx,"awaken") or string.find(tx,"click") or string.find(tx,"yes") or string.find(n,"awaken") then
+                        if string.find(tx, "awaken") or string.find(tx, "click") or string.find(tx, "yes") or string.find(n, "awaken") then
                             o.MouseButton1Click:Fire()
-                            notify("Awaken","Clicked button",F.Ok) wait(0.5)
+                            notify("Awaken", "Clicked button", F.Ok)
+                            wait(0.5)
                         end
                     end
                 end
             end
-            for _,o in pairs(workspace:GetDescendants()) do
+            for _, o in pairs(workspace:GetDescendants()) do
                 if o:IsA("ProximityPrompt") then
-                    local at=""; if o.ActionText then at=string.lower(o.ActionText) end
-                    if string.find(at,"awaken") or string.find(at,"click") then
-                        o.HoldDuration=0; o:InputHoldEnd()
+                    local at = ""
+                    if o.ActionText then at = string.lower(o.ActionText) end
+                    if string.find(at, "awaken") or string.find(at, "click") then
+                        o.HoldDuration = 0
+                        o:InputHoldEnd()
                     end
                 end
             end
-        end) wait(0.5)
+        end)
+        wait(0.5)
         if findEnemy() then
-            phase="fighting"; setStat("More enemies - fighting")
-            spawn(combat); return
+            phase = "fighting"
+            setStat("More enemies - fighting")
+            spawn(combat)
+            return
         end
     end
-    phase="done"; raidCount=raidCount+1
-    if countLbl then countLbl.Text=tostring(raidCount) end
-    setStat("Raid #"..raidCount.." complete!")
-    notify("Done","Raid #"..raidCount.." complete!",F.Ok)
+    phase = "done"
+    raidCount = raidCount + 1
+    if countLbl then countLbl.Text = tostring(raidCount) end
+    setStat("Raid #" .. raidCount .. " complete!")
+    notify("Done", "Raid #" .. raidCount .. " complete!", F.Ok)
     if S.Retry and raidActive then
         wait(S.Delay)
         if raidActive then doFullRaid() end
@@ -309,37 +377,43 @@ end
 
 -- Buy Chip
 local function buyChip()
-    phase="buying"; setStat("Buying "..S.SelectedChip.." chip...")
-    notify("Chip","Looking for Scientist...",F.Accent)
-    local npc=findNPC({"Scientist","Mysterious","Lab"})
+    phase = "buying"
+    setStat("Buying " .. S.SelectedChip .. " chip...")
+    notify("Chip", "Looking for Scientist...", F.Accent)
+    local npc = findNPC({"Scientist", "Mysterious", "Lab"})
     if npc then
-        local h=npc:FindFirstChild("HumanoidRootPart") or npc:FindFirstChildWhichIsA("BasePart")
+        local h = npc:FindFirstChild("HumanoidRootPart") or npc:FindFirstChildWhichIsA("BasePart")
         if h then
-            tpTo(h.Position+h.CFrame.LookVector*5); wait(1)
+            tpTo(h.Position + h.CFrame.LookVector * 5)
+            wait(1)
             SC(function()
-                for _,o in pairs(npc:GetDescendants()) do
+                for _, o in pairs(npc:GetDescendants()) do
                     if o:IsA("ProximityPrompt") then
-                        o.HoldDuration=0; o:InputHoldEnd()
-                        notify("Chip","Used prompt on NPC",F.Ok)
-                        wait(1) return
+                        o.HoldDuration = 0
+                        o:InputHoldEnd()
+                        notify("Chip", "Used prompt on NPC", F.Ok)
+                        wait(1)
+                        return
                     end
                 end
             end)
             wait(1.5)
-            local chipKws=getKW(S.SelectedChip)
-            notify("Chip","Selecting: "..S.SelectedChip,F.Accent)
+            local chipKws = getKW(S.SelectedChip)
+            notify("Chip", "Selecting: " .. S.SelectedChip, F.Accent)
             SC(function()
-                local pg=LP:FindFirstChild("PlayerGui")
+                local pg = LP:FindFirstChild("PlayerGui")
                 if pg then
-                    for _,o in pairs(pg:GetDescendants()) do
+                    for _, o in pairs(pg:GetDescendants()) do
                         if (o:IsA("TextButton") or o:IsA("ImageButton")) and o.Visible then
-                            local tx=""; if o.Text then tx=string.lower(o.Text) end
-                            local n=string.lower(o.Name)
-                            for _,k in pairs(chipKws) do
-                                if string.find(tx,k) or string.find(n,k) then
+                            local tx = ""
+                            if o.Text then tx = string.lower(o.Text) end
+                            local n = string.lower(o.Name)
+                            for _, k in pairs(chipKws) do
+                                if string.find(tx, k) or string.find(n, k) then
                                     o.MouseButton1Click:Fire()
-                                    notify("Chip","Selected: "..o.Text,F.Ok)
-                                    wait(0.5) return
+                                    notify("Chip", "Selected: " .. o.Text, F.Ok)
+                                    wait(0.5)
+                                    return
                                 end
                             end
                         end
@@ -348,67 +422,86 @@ local function buyChip()
             end)
             wait(0.5)
             SC(function()
-                for _,o in pairs(npc:GetDescendants()) do
+                for _, o in pairs(npc:GetDescendants()) do
                     if o:IsA("ClickDetector") then
                         o.MouseClick:Fire()
-                        notify("Chip","Clicked detector",F.Ok)
+                        notify("Chip", "Clicked detector", F.Ok)
                     end
                 end
             end)
             SC(function()
-                for _,o in pairs(RS:GetDescendants()) do
+                for _, o in pairs(RS:GetDescendants()) do
                     if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
-                        local n=string.lower(o.Name)
-                        if string.find(n,"chip") or string.find(n,"buy") or string.find(n,"raid") then
-                            if o:IsA("RemoteEvent") then o:FireServer(S.SelectedChip)
-                            else o:InvokeServer(S.SelectedChip) end
-                            notify("Chip","Fired remote: "..o.Name,F.Ok)
-                            wait(1) return
+                        local n = string.lower(o.Name)
+                        if string.find(n, "chip") or string.find(n, "buy") or string.find(n, "raid") then
+                            if o:IsA("RemoteEvent") then
+                                o:FireServer(S.SelectedChip)
+                            else
+                                o:InvokeServer(S.SelectedChip)
+                            end
+                            notify("Chip", "Fired remote: " .. o.Name, F.Ok)
+                            wait(1)
+                            return
                         end
                     end
                 end
             end)
         end
     else
-        notify("Chip","NPC not found! Go to lab",F.Bad)
+        notify("Chip", "NPC not found! Go to lab", F.Bad)
     end
     wait(1)
 end
 
 -- Start Raid
 local function startRaid()
-    phase="entering"; setStat("Starting raid...")
-    notify("Raid","Looking for entrance...",F.Accent)
+    phase = "entering"
+    setStat("Starting raid...")
+    notify("Raid", "Looking for entrance...", F.Accent)
     SC(function()
-        for _,o in pairs(RS:GetDescendants()) do
+        for _, o in pairs(RS:GetDescendants()) do
             if o:IsA("RemoteEvent") or o:IsA("RemoteFunction") then
-                local n=string.lower(o.Name)
-                if string.find(n,"raid") and (string.find(n,"start") or string.find(n,"enter") or string.find(n,"begin")) then
-                    if o:IsA("RemoteEvent") then o:FireServer()
-                    else o:InvokeServer() end
-                    notify("Raid","Fired: "..o.Name,F.Ok) return
+                local n = string.lower(o.Name)
+                if string.find(n, "raid") and (string.find(n, "start") or string.find(n, "enter") or string.find(n, "begin")) then
+                    if o:IsA("RemoteEvent") then
+                        o:FireServer()
+                    else
+                        o:InvokeServer()
+                    end
+                    notify("Raid", "Fired: " .. o.Name, F.Ok)
+                    return
                 end
             end
         end
     end)
     SC(function()
-        for _,o in pairs(workspace:GetDescendants()) do
+        for _, o in pairs(workspace:GetDescendants()) do
             if o:IsA("BasePart") then
-                local n=string.lower(o.Name)
-                if string.find(n,"door") or string.find(n,"portal") or string.find(n,"entrance") then
-                    local pp=o:FindFirstChildWhichIsA("ProximityPrompt")
-                    if pp then pp.HoldDuration=0; pp:InputHoldEnd()
-                        notify("Raid","Used door prompt",F.Ok) return end
-                    local cd=o:FindFirstChildWhichIsA("ClickDetector")
-                    if cd then cd.MouseClick:Fire()
-                        notify("Raid","Clicked door",F.Ok) return end
+                local n = string.lower(o.Name)
+                if string.find(n, "door") or string.find(n, "portal") or string.find(n, "entrance") then
+                    local pp = o:FindFirstChildWhichIsA("ProximityPrompt")
+                    if pp then
+                        pp.HoldDuration = 0
+                        pp:InputHoldEnd()
+                        notify("Raid", "Used door prompt", F.Ok)
+                        return
+                    end
+                    local cd = o:FindFirstChildWhichIsA("ClickDetector")
+                    if cd then
+                        cd.MouseClick:Fire()
+                        notify("Raid", "Clicked door", F.Ok)
+                        return
+                    end
                 end
             end
             if o:IsA("ProximityPrompt") then
-                local at=""; if o.ActionText then at=string.lower(o.ActionText) end
-                if string.find(at,"raid") or string.find(at,"enter") or string.find(at,"start") then
-                    o.HoldDuration=0; o:InputHoldEnd()
-                    notify("Raid","Used: "..at,F.Ok) return
+                local at = ""
+                if o.ActionText then at = string.lower(o.ActionText) end
+                if string.find(at, "raid") or string.find(at, "enter") or string.find(at, "start") then
+                    o.HoldDuration = 0
+                    o:InputHoldEnd()
+                    notify("Raid", "Used: " .. at, F.Ok)
+                    return
                 end
             end
         end
@@ -418,18 +511,21 @@ end
 
 -- Full Raid
 function doFullRaid()
-    raidActive=true; sIdx=1
+    raidActive = true
+    sIdx = 1
     if S.BuyChip then buyChip() end
     if S.StartRaid then startRaid() end
     if S.DoRaid then
-        phase="fighting"; setStat("Fighting raid enemies...")
-        notify("Raid","Combat started",F.Ok)
+        phase = "fighting"
+        setStat("Fighting raid enemies...")
+        notify("Raid", "Combat started", F.Ok)
         spawn(combat)
         spawn(function()
             while raidActive do
-                if phase=="awakening" and S.Awaken then doAwaken()
-                elseif phase=="done" then
-                    if not S.Retry then raidActive=false end
+                if phase == "awakening" and S.Awaken then
+                    doAwaken()
+                elseif phase == "done" then
+                    if not S.Retry then raidActive = false end
                     break
                 end
                 wait(0.5)
@@ -437,375 +533,608 @@ function doFullRaid()
         end)
     end
 end
-local function stopAll() raidActive=false; phase="idle"; setStat("Stopped") end
+
+local function stopAll()
+    raidActive = false
+    phase = "idle"
+    setStat("Stopped")
+end
 
 -- === FLUENT UI ===
-local sg=Instance.new("ScreenGui")
-sg.Name="AR2Fluent"; sg.ResetOnSpawn=false
-sg.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
-SC(function() sg.Parent=game:GetService("CoreGui") end)
-if not sg.Parent then sg.Parent=LP:WaitForChild("PlayerGui") end
+local sg = Instance.new("ScreenGui")
+sg.Name = "AR2Fluent"
+sg.ResetOnSpawn = false
+sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+SC(function() sg.Parent = game:GetService("CoreGui") end)
+if not sg.Parent then sg.Parent = LP:WaitForChild("PlayerGui") end
 
--- Backdrop (mica-like)
-local bd=Instance.new("Frame")
-bd.Size=UDim2.new(0,310,0,500)
-bd.Position=UDim2.new(0.5,-155,0.5,-250)
-bd.BackgroundColor3=Color3.fromRGB(24,24,24); bd.BackgroundTransparency=0.1
-bd.BorderSizePixel=0; bd.Parent=sg
-Instance.new("UICorner",bd).CornerRadius=UDim.new(0,8)
+-- Backdrop
+local bd = Instance.new("Frame")
+bd.Size = UDim2.new(0, 310, 0, 500)
+bd.Position = UDim2.new(0.5, -155, 0.5, -250)
+bd.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+bd.BackgroundTransparency = 0.1
+bd.BorderSizePixel = 0
+bd.Parent = sg
+Instance.new("UICorner", bd).CornerRadius = UDim.new(0, 8)
 
 -- Main card
-local main=Instance.new("Frame")
-main.Size=UDim2.new(0,310,0,500)
-main.Position=UDim2.new(0.5,-155,0.5,-250)
-main.BackgroundColor3=F.Card; main.BorderSizePixel=0
-main.ClipsDescendants=true; main.Parent=sg
-Instance.new("UICorner",main).CornerRadius=UDim.new(0,8)
-local ms=Instance.new("UIStroke")
-ms.Color=F.Brd; ms.Thickness=1; ms.Transparency=0.3; ms.Parent=main
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 310, 0, 500)
+main.Position = UDim2.new(0.5, -155, 0.5, -250)
+main.BackgroundColor3 = F.Card
+main.BorderSizePixel = 0
+main.ClipsDescendants = true
+main.Parent = sg
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 8)
+local ms = Instance.new("UIStroke")
+ms.Color = F.Brd
+ms.Thickness = 1
+ms.Transparency = 0.3
+ms.Parent = main
 
--- Title bar (minimal Fluent style - no separate bg, integrated)
-local tbH=48
-local tLbl=Instance.new("TextLabel")
-tLbl.Size=UDim2.new(1,-56,0,tbH); tLbl.Position=UDim2.new(0,16,0,0)
-tLbl.BackgroundTransparency=1; tLbl.Text="AUTO RAID v2"
-tLbl.TextColor3=F.Text1; tLbl.TextSize=16
-tLbl.Font=Enum.Font.GothamBold; tLbl.TextXAlignment=Enum.TextXAlignment.Left
-tLbl.Parent=main
-local sub=Instance.new("TextLabel")
-sub.Size=UDim2.new(1,-56,0,16); sub.Position=UDim2.new(0,16,0,30)
-sub.BackgroundTransparency=1; sub.Text="Fluent Design"
-sub.TextColor3=F.Text3; sub.TextSize=11
-sub.Font=Enum.Font.Gotham; sub.TextXAlignment=Enum.TextXAlignment.Left
-sub.Parent=main
+-- Title bar
+local tbH = 48
+local tLbl = Instance.new("TextLabel")
+tLbl.Size = UDim2.new(1, -56, 0, tbH)
+tLbl.Position = UDim2.new(0, 16, 0, 0)
+tLbl.BackgroundTransparency = 1
+tLbl.Text = "AUTO RAID v2"
+tLbl.TextColor3 = F.Text1
+tLbl.TextSize = 16
+tLbl.Font = Enum.Font.GothamBold
+tLbl.TextXAlignment = Enum.TextXAlignment.Left
+tLbl.Parent = main
 
--- Divider line under title
-local div1=Instance.new("Frame")
-div1.Size=UDim2.new(1,-24,0,1); div1.Position=UDim2.new(0,12,0,tbH-1)
-div1.BackgroundColor3=F.Brd; div1.BorderSizePixel=0; div1.Parent=main
+local sub = Instance.new("TextLabel")
+sub.Size = UDim2.new(1, -56, 0, 16)
+sub.Position = UDim2.new(0, 16, 0, 30)
+sub.BackgroundTransparency = 1
+sub.Text = "Fluent Design"
+sub.TextColor3 = F.Text3
+sub.TextSize = 11
+sub.Font = Enum.Font.Gotham
+sub.TextXAlignment = Enum.TextXAlignment.Left
+sub.Parent = main
 
--- Close button (Fluent style - subtle circle)
-local clBtn=Instance.new("TextButton")
-clBtn.Size=UDim2.new(0,32,0,32); clBtn.Position=UDim2.new(1,-40,0,8)
-clBtn.BackgroundColor3=Color3.fromRGB(50,50,50); clBtn.BackgroundTransparency=0.5
-clBtn.BorderSizePixel=0; clBtn.Text="\227"; clBtn.TextColor3=F.Text2
-clBtn.TextSize=14; clBtn.Font=Enum.Font.GothamBold; clBtn.AutoButtonColor=false
-clBtn.Parent=main
-Instance.new("UICorner",clBtn).CornerRadius=UDim.new(0,16)
-clBtn.MouseButton1Click:Connect(function() stopAll(); sg:Destroy() end)
+local div1 = Instance.new("Frame")
+div1.Size = UDim2.new(1, -24, 0, 1)
+div1.Position = UDim2.new(0, 12, 0, tbH - 1)
+div1.BackgroundColor3 = F.Brd
+div1.BorderSizePixel = 0
+div1.Parent = main
+
+-- Close button
+local clBtn = Instance.new("TextButton")
+clBtn.Size = UDim2.new(0, 32, 0, 32)
+clBtn.Position = UDim2.new(1, -40, 0, 8)
+clBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+clBtn.BackgroundTransparency = 0.5
+clBtn.BorderSizePixel = 0
+clBtn.Text = "\227"
+clBtn.TextColor3 = F.Text2
+clBtn.TextSize = 14
+clBtn.Font = Enum.Font.GothamBold
+clBtn.AutoButtonColor = false
+clBtn.Parent = main
+Instance.new("UICorner", clBtn).CornerRadius = UDim.new(0, 16)
+
+clBtn.MouseButton1Click:Connect(function()
+    stopAll()
+    sg:Destroy()
+end)
 clBtn.MouseEnter:Connect(function()
-    TweenService:Create(clBtn,TweenInfo.new(0.15),{BackgroundColor3=F.Bad,BackgroundTransparency=0.2,TextColor3=Color3.new(1,1,1)}):Play()
+    TweenService:Create(clBtn, TweenInfo.new(0.15), {BackgroundColor3 = F.Bad, BackgroundTransparency = 0.2, TextColor3 = Color3.new(1, 1, 1)}):Play()
 end)
 clBtn.MouseLeave:Connect(function()
-    TweenService:Create(clBtn,TweenInfo.new(0.15),{BackgroundColor3=Color3.fromRGB(50,50,50),BackgroundTransparency=0.5,TextColor3=F.Text2}):Play()
+    TweenService:Create(clBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 50, 50), BackgroundTransparency = 0.5, TextColor3 = F.Text2}):Play()
 end)
 
+-- Forward declaration for global close function
+local closeCurrentDD = nil
+
 -- Drag on title area
-local drag,dStart,sPos=false
-local dragArea=Instance.new("Frame")
-dragArea.Size=UDim2.new(1,-40,0,tbH); dragArea.BackgroundTransparency=1
-dragArea.Position=UDim2.new(0,0,0,0); dragArea.Parent=main
+local drag, dStart, sPos = false
+local dragArea = Instance.new("Frame")
+dragArea.Size = UDim2.new(1, -40, 0, tbH)
+dragArea.BackgroundTransparency = 1
+dragArea.Position = UDim2.new(0, 0, 0, 0)
+dragArea.Parent = main
+
 dragArea.InputBegan:Connect(function(i)
-    if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-        drag=true; dStart=i.Position; sPos=main.Position
-        i.Changed:Connect(function() if i.UserInputState==Enum.UserInputState.End then drag=false end end)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        if closeCurrentDD then closeCurrentDD() end
+        drag = true
+        dStart = i.Position
+        sPos = main.Position
+        i.Changed:Connect(function()
+            if i.UserInputState == Enum.UserInputState.End then drag = false end
+        end)
     end
 end)
+
 dragArea.InputChanged:Connect(function(i)
-    if drag and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then
-        local d=i.Position-dStart
-        main.Position=UDim2.new(sPos.X.Scale,sPos.X.Offset+d.X,sPos.Y.Scale,sPos.Y.Offset+d.Y)
-        bd.Position=main.Position
+    if drag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        local d = i.Position - dStart
+        main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + d.X, sPos.Y.Scale, sPos.Y.Offset + d.Y)
+        bd.Position = main.Position
     end
 end)
 
 -- Content area
-local cf=Instance.new("Frame")
-cf.Size=UDim2.new(1,-20,1,-tbH-8); cf.Position=UDim2.new(0,10,0,tbH+2)
-cf.BackgroundTransparency=1; cf.ClipsDescendants=true; cf.Parent=main
-local sc=Instance.new("ScrollingFrame")
-sc.Size=UDim2.new(1,0,1,0); sc.BackgroundTransparency=1
-sc.ScrollBarThickness=2; sc.ScrollBarImageColor3=F.Brd
-sc.CanvasSize=UDim2.new(0,0,0,0); sc.AutomaticCanvasSize=Enum.AutomaticSize.Y
-sc.Parent=cf
-local ly=Instance.new("UIListLayout")
-ly.SortOrder=Enum.SortOrder.LayoutOrder; ly.Padding=UDim.new(0,4); ly.Parent=sc
-Instance.new("UIPadding",sc).PaddingBottom=UDim.new(0,10)
+local cf = Instance.new("Frame")
+cf.Size = UDim2.new(1, -20, 1, -tbH - 8)
+cf.Position = UDim2.new(0, 10, 0, tbH + 2)
+cf.BackgroundTransparency = 1
+cf.ClipsDescendants = true
+cf.Parent = main
+
+local sc = Instance.new("ScrollingFrame")
+sc.Size = UDim2.new(1, 0, 1, 0)
+sc.BackgroundTransparency = 1
+sc.ScrollBarThickness = 2
+sc.ScrollBarImageColor3 = F.Brd
+sc.CanvasSize = UDim2.new(0, 0, 0, 0)
+sc.AutomaticCanvasSize = Enum.AutomaticSize.Y
+sc.Parent = cf
+
+-- Auto close Dropdown when scrolling
+sc:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+    if closeCurrentDD then closeCurrentDD() end
+end)
+
+local ly = Instance.new("UIListLayout")
+ly.SortOrder = Enum.SortOrder.LayoutOrder
+ly.Padding = UDim.new(0, 4)
+ly.Parent = sc
+Instance.new("UIPadding", sc).PaddingBottom = UDim.new(0, 10)
 
 -- === FLUENT UI COMPONENTS ===
 
--- Status pill (top of content)
-local sbar=Instance.new("Frame")
-sbar.Size=UDim2.new(1,0,0,32); sbar.BackgroundColor3=F.Surface
-sbar.BackgroundTransparency=0.3; sbar.BorderSizePixel=0; sbar.Parent=sc
-Instance.new("UICorner",sbar).CornerRadius=UDim.new(0,6)
-statusLbl=Instance.new("TextLabel")
-statusLbl.Size=UDim2.new(1,-52,1,0); statusLbl.Position=UDim2.new(0,12,0,0)
-statusLbl.BackgroundTransparency=1; statusLbl.Text="Ready"
-statusLbl.TextColor3=F.Text2; statusLbl.TextSize=11; statusLbl.Font=Enum.Font.Gotham
-statusLbl.TextXAlignment=Enum.TextXAlignment.Left; statusLbl.Parent=sbar
-local cPill=Instance.new("Frame")
-cPill.Size=UDim2.new(0,32,0,20); cPill.Position=UDim2.new(1,-40,0.5,-10)
-cPill.BackgroundColor3=F.Accent; cPill.BackgroundTransparency=0.6
-cPill.BorderSizePixel=0; cPill.Parent=sbar
-Instance.new("UICorner",cPill).CornerRadius=UDim.new(0,10)
-countLbl=Instance.new("TextLabel")
-countLbl.Size=UDim2.new(1,0,1,0); countLbl.BackgroundTransparency=1
-countLbl.Text="0"; countLbl.TextColor3=F.Text1
-countLbl.TextSize=10; countLbl.Font=Enum.Font.GothamBold; countLbl.Parent=cPill
+-- Status pill
+local sbar = Instance.new("Frame")
+sbar.Size = UDim2.new(1, 0, 0, 32)
+sbar.BackgroundColor3 = F.Surface
+sbar.BackgroundTransparency = 0.3
+sbar.BorderSizePixel = 0
+sbar.Parent = sc
+Instance.new("UICorner", sbar).CornerRadius = UDim.new(0, 6)
 
--- Section header (Fluent - subtle uppercase label)
+statusLbl = Instance.new("TextLabel")
+statusLbl.Size = UDim2.new(1, -52, 1, 0)
+statusLbl.Position = UDim2.new(0, 12, 0, 0)
+statusLbl.BackgroundTransparency = 1
+statusLbl.Text = "Ready"
+statusLbl.TextColor3 = F.Text2
+statusLbl.TextSize = 11
+statusLbl.Font = Enum.Font.Gotham
+statusLbl.TextXAlignment = Enum.TextXAlignment.Left
+statusLbl.Parent = sbar
+
+local cPill = Instance.new("Frame")
+cPill.Size = UDim2.new(0, 32, 0, 20)
+cPill.Position = UDim2.new(1, -40, 0.5, -10)
+cPill.BackgroundColor3 = F.Accent
+cPill.BackgroundTransparency = 0.6
+cPill.BorderSizePixel = 0
+cPill.Parent = sbar
+Instance.new("UICorner", cPill).CornerRadius = UDim.new(0, 10)
+
+countLbl = Instance.new("TextLabel")
+countLbl.Size = UDim2.new(1, 0, 1, 0)
+countLbl.BackgroundTransparency = 1
+countLbl.Text = "0"
+countLbl.TextColor3 = F.Text1
+countLbl.TextSize = 10
+countLbl.Font = Enum.Font.GothamBold
+countLbl.Parent = cPill
+
+-- Section header
 local function section(name)
-    local f=Instance.new("Frame")
-    f.Size=UDim2.new(1,0,0,22); f.BackgroundTransparency=1; f.Parent=sc
-    local l=Instance.new("TextLabel")
-    l.Size=UDim2.new(1,0,1,0); l.Position=UDim2.new(0,2,0,0)
-    l.BackgroundTransparency=1; l.Text=string.upper(name)
-    l.TextColor3=F.Text3; l.TextSize=10; l.Font=Enum.Font.GothamBold
-    l.TextXAlignment=Enum.TextXAlignment.Left; l.Parent=f
+    local f = Instance.new("Frame")
+    f.Size = UDim2.new(1, 0, 0, 22)
+    f.BackgroundTransparency = 1
+    f.Parent = sc
+    
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, 0, 1, 0)
+    l.Position = UDim2.new(0, 2, 0, 0)
+    l.BackgroundTransparency = 1
+    l.Text = string.upper(name)
+    l.TextColor3 = F.Text3
+    l.TextSize = 10
+    l.Font = Enum.Font.GothamBold
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = f
 end
 
--- Fluent Toggle (pill style)
-local function toggle(label,def,cb)
-    local f=Instance.new("Frame")
-    f.Size=UDim2.new(1,0,0,40); f.BackgroundColor3=Color3.fromRGB(38,38,38)
-    f.BackgroundTransparency=0.5; f.BorderSizePixel=0; f.Parent=sc
-    Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
-    local l=Instance.new("TextLabel")
-    l.Size=UDim2.new(1,-52,1,0); l.Position=UDim2.new(0,12,0,0)
-    l.BackgroundTransparency=1; l.Text=label; l.TextColor3=F.Text1; l.TextSize=12
-    l.Font=Enum.Font.Gotham; l.TextXAlignment=Enum.TextXAlignment.Left; l.Parent=f
-    -- Pill toggle
-    local pill=Instance.new("TextButton")
-    pill.Size=UDim2.new(0,40,0,22); pill.Position=UDim2.new(1,-48,0.5,-11)
-    pill.BackgroundColor3=F.TogOff; pill.BorderSizePixel=0
-    pill.Text=""; pill.AutoButtonColor=false; pill.Parent=f
-    Instance.new("UICorner",pill).CornerRadius=UDim.new(0,11)
-    local dot=Instance.new("Frame")
-    dot.Size=UDim2.new(0,16,0,16); dot.Position=UDim.new(0,2,0,3)
-    dot.BackgroundColor3=Color3.fromRGB(160,160,160); dot.BorderSizePixel=0; dot.Parent=pill
-    Instance.new("UICorner",dot).CornerRadius=UDim.new(0,8)
-    local on=def
+-- Fluent Toggle
+local function toggle(label, def, cb)
+    local f = Instance.new("Frame")
+    f.Size = UDim2.new(1, 0, 0, 40)
+    f.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+    f.BackgroundTransparency = 0.5
+    f.BorderSizePixel = 0
+    f.Parent = sc
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+    
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -52, 1, 0)
+    l.Position = UDim2.new(0, 12, 0, 0)
+    l.BackgroundTransparency = 1
+    l.Text = label
+    l.TextColor3 = F.Text1
+    l.TextSize = 12
+    l.Font = Enum.Font.Gotham
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = f
+    
+    local pill = Instance.new("TextButton")
+    pill.Size = UDim2.new(0, 40, 0, 22)
+    pill.Position = UDim2.new(1, -48, 0.5, -11)
+    pill.BackgroundColor3 = F.TogOff
+    pill.BorderSizePixel = 0
+    pill.Text = ""
+    pill.AutoButtonColor = false
+    pill.Parent = f
+    Instance.new("UICorner", pill).CornerRadius = UDim.new(0, 11)
+    
+    local dot = Instance.new("Frame")
+    dot.Size = UDim2.new(0, 16, 0, 16)
+    dot.Position = UDim2.new(0, 2, 0, 3)
+    dot.BackgroundColor3 = Color3.fromRGB(160, 160, 160)
+    dot.BorderSizePixel = 0
+    dot.Parent = pill
+    Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 8)
+    
+    local on = def
     local function up()
         if on then
-            TweenService:Create(pill,TweenInfo.new(0.2,Enum.EasingStyle.Quad),{BackgroundColor3=F.Accent}):Play()
-            TweenService:Create(dot,TweenInfo.new(0.2,Enum.EasingStyle.Quad),{Position=UDim2.new(0,22,0,3),BackgroundColor3=Color3.new(1,1,1)}):Play()
+            TweenService:Create(pill, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {BackgroundColor3 = F.Accent}):Play()
+            TweenService:Create(dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 22, 0, 3), BackgroundColor3 = Color3.new(1, 1, 1)}):Play()
         else
-            TweenService:Create(pill,TweenInfo.new(0.2,Enum.EasingStyle.Quad),{BackgroundColor3=F.TogOff}):Play()
-            TweenService:Create(dot,TweenInfo.new(0.2,Enum.EasingStyle.Quad),{Position=UDim2.new(0,2,0,3),BackgroundColor3=Color3.fromRGB(160,160,160)}):Play()
+            TweenService:Create(pill, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {BackgroundColor3 = F.TogOff}):Play()
+            TweenService:Create(dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 2, 0, 3), BackgroundColor3 = Color3.fromRGB(160, 160, 160)}):Play()
         end
     end
-    pill.MouseButton1Click:Connect(function() on=not on; up(); if cb then cb(on) end end)
+    pill.MouseButton1Click:Connect(function()
+        on = not on
+        up()
+        if cb then cb(on) end
+    end)
     if def then up() end
 end
 
 -- Fluent Slider
-local function slider(label,mn,mx,df,cb)
-    local f=Instance.new("Frame")
-    f.Size=UDim2.new(1,0,0,48); f.BackgroundColor3=Color3.fromRGB(38,38,38)
-    f.BackgroundTransparency=0.5; f.BorderSizePixel=0; f.Parent=sc
-    Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
-    local l=Instance.new("TextLabel")
-    l.Size=UDim2.new(1,-50,0,18); l.Position=UDim2.new(0,12,0,6)
-    l.BackgroundTransparency=1; l.Text=label; l.TextColor3=F.Text1; l.TextSize=11
-    l.Font=Enum.Font.Gotham; l.TextXAlignment=Enum.TextXAlignment.Left; l.Parent=f
-    local v=Instance.new("TextLabel")
-    v.Size=UDim2.new(0,36,0,18); v.Position=UDim2.new(1,-46,0,6)
-    v.BackgroundTransparency=1; v.Text=tostring(df); v.TextColor3=F.Accent; v.TextSize=11
-    v.Font=Enum.Font.GothamBold; v.TextXAlignment=Enum.TextXAlignment.Right; v.Parent=f
-    -- Fluent track (thinner, rounder)
-    local t=Instance.new("Frame")
-    t.Size=UDim2.new(1,-24,0,4); t.Position=UDim2.new(0,12,0,34)
-    t.BackgroundColor3=F.Track; t.BorderSizePixel=0; t.Parent=f
-    Instance.new("UICorner",t).CornerRadius=UDim.new(0,2)
-    local fl=Instance.new("Frame")
-    fl.Size=UDim2.new((df-mn)/(mx-mn),0,1,0)
-    fl.BackgroundColor3=F.Accent; fl.BorderSizePixel=0; fl.Parent=t
-    Instance.new("UICorner",fl).CornerRadius=UDim.new(0,2)
-    local kn=Instance.new("Frame")
-    kn.Size=UDim2.new(0,16,0,16)
-    kn.Position=UDim2.new((df-mn)/(mx-mn),-8,0,-6)
-    kn.BackgroundColor3=F.Text1; kn.BorderSizePixel=0; kn.Parent=f
-    Instance.new("UICorner",kn).CornerRadius=UDim.new(0,8)
-    -- Hover ring on knob
-    local ring=Instance.new("UIStroke")
-    ring.Color=F.Accent; ring.Thickness=2; ring.Transparency=1; ring.Parent=kn
-    local sld=false
+local function slider(label, mn, mx, df, cb)
+    local f = Instance.new("Frame")
+    f.Size = UDim2.new(1, 0, 0, 48)
+    f.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+    f.BackgroundTransparency = 0.5
+    f.BorderSizePixel = 0
+    f.Parent = sc
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+    
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -50, 0, 18)
+    l.Position = UDim2.new(0, 12, 0, 6)
+    l.BackgroundTransparency = 1
+    l.Text = label
+    l.TextColor3 = F.Text1
+    l.TextSize = 11
+    l.Font = Enum.Font.Gotham
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = f
+    
+    local v = Instance.new("TextLabel")
+    v.Size = UDim2.new(0, 36, 0, 18)
+    v.Position = UDim2.new(1, -46, 0, 6)
+    v.BackgroundTransparency = 1
+    v.Text = tostring(df)
+    v.TextColor3 = F.Accent
+    v.TextSize = 11
+    v.Font = Enum.Font.GothamBold
+    v.TextXAlignment = Enum.TextXAlignment.Right
+    v.Parent = f
+    
+    local t = Instance.new("Frame")
+    t.Size = UDim2.new(1, -24, 0, 4)
+    t.Position = UDim2.new(0, 12, 0, 34)
+    t.BackgroundColor3 = F.Track
+    t.BorderSizePixel = 0
+    t.Parent = f
+    Instance.new("UICorner", t).CornerRadius = UDim.new(0, 2)
+    
+    local fl = Instance.new("Frame")
+    fl.Size = UDim2.new((df - mn) / (mx - mn), 0, 1, 0)
+    fl.BackgroundColor3 = F.Accent
+    fl.BorderSizePixel = 0
+    fl.Parent = t
+    Instance.new("UICorner", fl).CornerRadius = UDim.new(0, 2)
+    
+    local kn = Instance.new("Frame")
+    kn.Size = UDim2.new(0, 16, 0, 16)
+    kn.Position = UDim2.new((df - mn) / (mx - mn), -8, 0, -6)
+    kn.BackgroundColor3 = F.Text1
+    kn.BorderSizePixel = 0
+    kn.Parent = f
+    Instance.new("UICorner", kn).CornerRadius = UDim.new(0, 8)
+    
+    local ring = Instance.new("UIStroke")
+    ring.Color = F.Accent
+    ring.Thickness = 2
+    ring.Transparency = 1
+    ring.Parent = kn
+    
+    local sld = false
     local function upd(inp)
-        local rx=math.clamp((inp.Position.X-t.AbsolutePosition.X)/t.AbsoluteSize.X,0,1)
-        local val=math.floor(mn+rx*(mx-mn))
-        fl.Size=UDim2.new(rx,0,1,0); kn.Position=UDim2.new(rx,-8,0,-6)
-        v.Text=tostring(val)
+        local rx = math.clamp((inp.Position.X - t.AbsolutePosition.X) / t.AbsoluteSize.X, 0, 1)
+        local val = math.floor(mn + rx * (mx - mn))
+        fl.Size = UDim2.new(rx, 0, 1, 0)
+        kn.Position = UDim2.new(rx, -8, 0, -6)
+        v.Text = tostring(val)
         if cb then cb(val) end
     end
+    
     t.InputBegan:Connect(function(i)
-        if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-            sld=true; upd(i)
-            TweenService:Create(ring,TweenInfo.new(0.15),{Transparency=0.3}):Play()
+        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+            sld = true
+            upd(i)
+            TweenService:Create(ring, TweenInfo.new(0.15), {Transparency = 0.3}):Play()
         end
     end)
     UserInput.InputChanged:Connect(function(i)
-        if sld and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then upd(i) end
+        if sld and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+            upd(i)
+        end
     end)
     UserInput.InputEnded:Connect(function(i)
-        if sld and (i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch) then
-            sld=false
-            TweenService:Create(ring,TweenInfo.new(0.15),{Transparency=1}):Play()
+        if sld and (i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch) then
+            sld = false
+            TweenService:Create(ring, TweenInfo.new(0.15), {Transparency = 1}):Play()
         end
     end)
 end
 
--- Fluent Button (subtle, rounded)
-local function btn(label,col,cb)
-    local b=Instance.new("TextButton")
-    b.Size=UDim2.new(1,0,0,34); b.BackgroundColor3=Color3.fromRGB(38,38,38)
-    b.BackgroundTransparency=0.5; b.BorderSizePixel=0
-    b.Text=""; b.AutoButtonColor=false; b.Parent=sc
-    Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
-    -- Accent left border
-    local accBar=Instance.new("Frame")
-    accBar.Size=UDim2.new(0,3,0.6,0)
-    accBar.Position=UDim2.new(0,6,0.2,0)
-    accBar.BackgroundColor3=col or F.Accent; accBar.BorderSizePixel=0; accBar.Parent=b
-    Instance.new("UICorner",accBar).CornerRadius=UDim.new(0,2)
-    local l=Instance.new("TextLabel")
-    l.Size=UDim2.new(1,-20,1,0); l.Position=UDim2.new(0,16,0,0)
-    l.BackgroundTransparency=1; l.Text=label; l.TextColor3=col or F.Accent
-    l.TextSize=12; l.Font=Enum.Font.GothamBold
-    l.TextXAlignment=Enum.TextXAlignment.Left; l.Parent=b
+-- Fluent Button
+local function btn(label, col, cb)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 34)
+    b.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+    b.BackgroundTransparency = 0.5
+    b.BorderSizePixel = 0
+    b.Text = ""
+    b.AutoButtonColor = false
+    b.Parent = sc
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
+    
+    local accBar = Instance.new("Frame")
+    accBar.Size = UDim2.new(0, 3, 0.6, 0)
+    accBar.Position = UDim2.new(0, 6, 0.2, 0)
+    accBar.BackgroundColor3 = col or F.Accent
+    accBar.BorderSizePixel = 0
+    accBar.Parent = b
+    Instance.new("UICorner", accBar).CornerRadius = UDim.new(0, 2)
+    
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -20, 1, 0)
+    l.Position = UDim2.new(0, 16, 0, 0)
+    l.BackgroundTransparency = 1
+    l.Text = label
+    l.TextColor3 = col or F.Accent
+    l.TextSize = 12
+    l.Font = Enum.Font.GothamBold
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = b
+    
     b.MouseButton1Click:Connect(function() if cb then cb() end end)
     b.MouseEnter:Connect(function()
-        TweenService:Create(b,TweenInfo.new(0.12),{BackgroundTransparency=0.2,BackgroundColor3=Color3.fromRGB(56,56,56)}):Play()
+        TweenService:Create(b, TweenInfo.new(0.12), {BackgroundTransparency = 0.2, BackgroundColor3 = Color3.fromRGB(56, 56, 56)}):Play()
     end)
     b.MouseLeave:Connect(function()
-        TweenService:Create(b,TweenInfo.new(0.12),{BackgroundTransparency=0.5,BackgroundColor3=Color3.fromRGB(38,38,38)}):Play()
+        TweenService:Create(b, TweenInfo.new(0.12), {BackgroundTransparency = 0.5, BackgroundColor3 = Color3.fromRGB(38, 38, 38)}):Play()
     end)
 end
 
--- Fluent Dropdown (combobox style)
-local openDD=nil
-local function dropdown(label,opts,def,cb)
-    local f=Instance.new("Frame")
-    f.Size=UDim2.new(1,0,0,40); f.BackgroundColor3=Color3.fromRGB(38,38,38)
-    f.BackgroundTransparency=0.5; f.BorderSizePixel=0; f.Parent=sc
-    Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
-    -- Hover effect on container
+-- === FIXED FLUENT DROPDOWN ===
+local clickBlocker = nil
+
+local function dropdown(label, opts, def, cb)
+    local f = Instance.new("Frame")
+    f.Size = UDim2.new(1, 0, 0, 40)
+    f.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+    f.BackgroundTransparency = 0.5
+    f.BorderSizePixel = 0
+    f.Parent = sc
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+
     f.InputBegan:Connect(function(i)
-        if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then
-            TweenService:Create(f,TweenInfo.new(0.12),{BackgroundTransparency=0.2}):Play()
+        if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then
+            TweenService:Create(f, TweenInfo.new(0.12), {BackgroundTransparency = 0.2}):Play()
         end
     end)
     f.InputEnded:Connect(function(i)
-        if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then
-            TweenService:Create(f,TweenInfo.new(0.12),{BackgroundTransparency=0.5}):Play()
+        if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then
+            TweenService:Create(f, TweenInfo.new(0.12), {BackgroundTransparency = 0.5}):Play()
         end
     end)
-    local l=Instance.new("TextLabel")
-    l.Size=UDim2.new(1,-110,1,0); l.Position=UDim2.new(0,12,0,0)
-    l.BackgroundTransparency=1; l.Text=label; l.TextColor3=F.Text1; l.TextSize=11
-    l.Font=Enum.Font.Gotham; l.TextXAlignment=Enum.TextXAlignment.Left
-    l.TextTruncate=Enum.TextTruncate.AtEnd; l.Parent=f
-    -- Combobox trigger
-    local cbBtn=Instance.new("TextButton")
-    cbBtn.Size=UDim2.new(0,100,0,28); cbBtn.Position=UDim2.new(1,-108,0.5,-14)
-    cbBtn.BackgroundColor3=F.Surface; cbBtn.BackgroundTransparency=0.2
-    cbBtn.BorderSizePixel=0; cbBtn.Text=""; cbBtn.AutoButtonColor=false; cbBtn.Parent=f
-    Instance.new("UICorner",cbBtn).CornerRadius=UDim.new(0,4)
-    local cbStroke=Instance.new("UIStroke")
-    cbStroke.Color=F.Brd; cbStroke.Thickness=1; cbStroke.Transparency=0.3; cbStroke.Parent=cbBtn
-    local vLbl=Instance.new("TextLabel")
-    vLbl.Size=UDim2.new(1,-24,1,0); vLbl.Position=UDim2.new(0,8,0,0)
-    vLbl.BackgroundTransparency=1; vLbl.Text=def; vLbl.TextColor3=F.Text1
-    vLbl.TextSize=10; vLbl.Font=Enum.Font.GothamBold
-    vLbl.TextXAlignment=Enum.TextXAlignment.Left
-    vLbl.TextTruncate=Enum.TextTruncate.AtEnd; vLbl.Parent=cbBtn
-    -- Chevron
-    local chev=Instance.new("TextLabel")
-    chev.Size=UDim2.new(0,16,0,16); chev.Position=UDim2.new(1,-18,0.5,-8)
-    chev.BackgroundTransparency=1; chev.Text="\203"; chev.TextColor3=F.Text3
-    chev.TextSize=7; chev.Font=Enum.Font.GothamBold; chev.Parent=cbBtn
-    local optFrame=nil
-    local isOpen=false
+
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -110, 1, 0)
+    l.Position = UDim2.new(0, 12, 0, 0)
+    l.BackgroundTransparency = 1
+    l.Text = label
+    l.TextColor3 = F.Text1
+    l.TextSize = 11
+    l.Font = Enum.Font.Gotham
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.TextTruncate = Enum.TextTruncate.AtEnd
+    l.Parent = f
+
+    local cbBtn = Instance.new("TextButton")
+    cbBtn.Size = UDim2.new(0, 100, 0, 28)
+    cbBtn.Position = UDim2.new(1, -108, 0.5, -14)
+    cbBtn.BackgroundColor3 = F.Surface
+    cbBtn.BackgroundTransparency = 0.2
+    cbBtn.BorderSizePixel = 0
+    cbBtn.Text = ""
+    cbBtn.AutoButtonColor = false
+    cbBtn.Parent = f
+    Instance.new("UICorner", cbBtn).CornerRadius = UDim.new(0, 4)
+
+    local cbStroke = Instance.new("UIStroke")
+    cbStroke.Color = F.Brd
+    cbStroke.Thickness = 1
+    cbStroke.Transparency = 0.3
+    cbStroke.Parent = cbBtn
+
+    local vLbl = Instance.new("TextLabel")
+    vLbl.Size = UDim2.new(1, -24, 1, 0)
+    vLbl.Position = UDim2.new(0, 8, 0, 0)
+    vLbl.BackgroundTransparency = 1
+    vLbl.Text = def
+    vLbl.TextColor3 = F.Text1
+    vLbl.TextSize = 10
+    vLbl.Font = Enum.Font.GothamBold
+    vLbl.TextXAlignment = Enum.TextXAlignment.Left
+    vLbl.TextTruncate = Enum.TextTruncate.AtEnd
+    vLbl.Parent = cbBtn
+
+    local chev = Instance.new("TextLabel")
+    chev.Size = UDim2.new(0, 16, 0, 16)
+    chev.Position = UDim2.new(1, -18, 0.5, -8)
+    chev.BackgroundTransparency = 1
+    chev.Text = "\203"
+    chev.TextColor3 = F.Text3
+    chev.TextSize = 7
+    chev.Font = Enum.Font.GothamBold
+    chev.Parent = cbBtn
+
+    local optFrame = nil
+    local isOpen = false
+
     local function closeDD()
         if optFrame then
-            TweenService:Create(optFrame,TweenInfo.new(0.15,Enum.EasingStyle.Quad),{BackgroundTransparency=1}):Play()
-            spawn(function() wait(0.15) SC(function() if optFrame then optFrame:Destroy() end end) end)
-            optFrame=nil
+            local tempFrame = optFrame
+            TweenService:Create(tempFrame, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {BackgroundTransparency = 1}):Play()
+            spawn(function()
+                wait(0.15)
+                SC(function() if tempFrame then tempFrame:Destroy() end end)
+            end)
+            optFrame = nil
         end
-        isOpen=false
-        TweenService:Create(chev,TweenInfo.new(0.15),{Rotation=0}):Play()
-        TweenService:Create(cbStroke,TweenInfo.new(0.15),{Color=F.Brd}):Play()
+        if clickBlocker then
+            clickBlocker:Destroy()
+            clickBlocker = nil
+        end
+        isOpen = false
+        if closeCurrentDD == closeDD then closeCurrentDD = nil end
+        TweenService:Create(chev, TweenInfo.new(0.15), {Rotation = 0}):Play()
+        TweenService:Create(cbStroke, TweenInfo.new(0.15), {Color = F.Brd}):Play()
     end
+
     local function openDDFn()
-        if openDD and openDD~=closeDD then openDD() end
+        if closeCurrentDD and closeCurrentDD ~= closeDD then closeCurrentDD() end
         if isOpen then closeDD(); return end
-        isOpen=true
-        TweenService:Create(chev,TweenInfo.new(0.15),{Rotation=180}):Play()
-        TweenService:Create(cbStroke,TweenInfo.new(0.15),{Color=F.Accent}):Play()
-        openDD=closeDD
-        local maxH=math.min(#opts*26+8,200)
-        optFrame=Instance.new("Frame")
-        optFrame.Size=UDim2.new(0,270,0,maxH)
-        optFrame.Position=UDim2.new(0,0,1,4)
-        optFrame.BackgroundColor3=F.Card; optFrame.BorderSizePixel=0
-        optFrame.ClipsDescendants=true; optFrame.Parent=f
-        Instance.new("UICorner",optFrame).CornerRadius=UDim.new(0,6)
-        local oStroke=Instance.new("UIStroke")
-        oStroke.Color=F.Brd; oStroke.Thickness=1; oStroke.Transparency=0.3; oStroke.Parent=optFrame
-        -- Shadow effect
-        local shd=Instance.new("Frame")
-        shd.Size=UDim2.new(1,4,1,4); shd.Position=UDim2.new(0,-2,0,-2)
-        shd.BackgroundColor3=Color3.fromRGB(0,0,0); shd.BackgroundTransparency=0.6
-        shd.BorderSizePixel=0; shd.Parent=optFrame
-        Instance.new("UICorner",shd).CornerRadius=UDim.new(0,8)
-        shd.ZIndex=-1; optFrame.ZIndex=10
-        local oSc=Instance.new("ScrollingFrame")
-        oSc.Size=UDim2.new(1,-6,1,-6); oSc.Position=UDim2.new(0,3,0,3)
-        oSc.BackgroundTransparency=1; oSc.ScrollBarThickness=2
-        oSc.ScrollBarImageColor3=F.Brd; oSc.ZIndex=11
-        oSc.CanvasSize=UDim2.new(0,0,0,#opts*26)
-        oSc.Parent=optFrame
-        local oLy=Instance.new("UIListLayout")
-        oLy.SortOrder=Enum.SortOrder.LayoutOrder; oLy.Padding=UDim.new(0,1); oLy.Parent=oSc
-        for i,opt in ipairs(opts) do
-            local oB=Instance.new("TextButton")
-            oB.Size=UDim2.new(1,0,0,25); oB.BackgroundColor3=Color3.fromRGB(56,56,56)
-            oB.BackgroundTransparency=0.8; oB.BorderSizePixel=0
-            oB.Text=""; oB.AutoButtonColor=false; oB.ZIndex=12; oB.Parent=oSc
-            Instance.new("UICorner",oB).CornerRadius=UDim.new(0,4)
-            local oL=Instance.new("TextLabel")
-            oL.Size=UDim2.new(1,-12,1,0); oL.Position=UDim2.new(0,8,0,0)
-            oL.BackgroundTransparency=1; oL.Text=opt; oL.TextColor3=F.Text2
-            oL.TextSize=10; oL.Font=Enum.Font.Gotham
-            oL.TextXAlignment=Enum.TextXAlignment.Left
-            oL.TextTruncate=Enum.TextTruncate.AtEnd; oL.ZIndex=13; oL.Parent=oB
-            -- Mark selected
-            local isSel = (opt==def)
-            if isSel then
-                oB.BackgroundTransparency=0.4
-                oL.TextColor3=F.Accent
-            end
+
+        isOpen = true
+        closeCurrentDD = closeDD
+        TweenService:Create(chev, TweenInfo.new(0.15), {Rotation = 180}):Play()
+        TweenService:Create(cbStroke, TweenInfo.new(0.15), {Color = F.Accent}):Play()
+
+        -- Lớp phủ tàng hình bắt sự kiện chạm bên ngoài
+        clickBlocker = Instance.new("TextButton")
+        clickBlocker.Size = UDim2.new(10, 0, 10, 0)
+        clickBlocker.Position = UDim2.new(-5, 0, -5, 0)
+        clickBlocker.BackgroundTransparency = 1
+        clickBlocker.Text = ""
+        clickBlocker.ZIndex = 90
+        clickBlocker.Parent = sg
+        clickBlocker.MouseButton1Click:Connect(closeDD)
+
+        local maxH = math.min(#opts * 26 + 8, 200)
+        optFrame = Instance.new("Frame")
+        optFrame.Size = UDim2.new(0, 270, 0, maxH)
+        optFrame.Position = UDim2.new(0, f.AbsolutePosition.X + 10, 0, f.AbsolutePosition.Y + 45)
+        optFrame.BackgroundColor3 = F.Card
+        optFrame.BorderSizePixel = 0
+        optFrame.ClipsDescendants = true
+        optFrame.ZIndex = 100
+        optFrame.Parent = sg
+        Instance.new("UICorner", optFrame).CornerRadius = UDim.new(0, 6)
+
+        local oStroke = Instance.new("UIStroke")
+        oStroke.Color = F.Brd
+        oStroke.Thickness = 1
+        oStroke.Transparency = 0.3
+        oStroke.Parent = optFrame
+
+        local shd = Instance.new("Frame")
+        shd.Size = UDim2.new(1, 4, 1, 4)
+        shd.Position = UDim2.new(0, -2, 0, -2)
+        shd.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        shd.BackgroundTransparency = 0.6
+        shd.BorderSizePixel = 0
+        shd.ZIndex = 99
+        shd.Parent = optFrame
+        Instance.new("UICorner", shd).CornerRadius = UDim.new(0, 8)
+
+        local oSc = Instance.new("ScrollingFrame")
+        oSc.Size = UDim2.new(1, -6, 1, -6)
+        oSc.Position = UDim2.new(0, 3, 0, 3)
+        oSc.BackgroundTransparency = 1
+        oSc.ScrollBarThickness = 2
+        oSc.ScrollBarImageColor3 = F.Brd
+        oSc.ZIndex = 101
+        oSc.CanvasSize = UDim2.new(0, 0, 0, #opts * 26)
+        oSc.Parent = optFrame
+
+        local oLy = Instance.new("UIListLayout")
+        oLy.SortOrder = Enum.SortOrder.LayoutOrder
+        oLy.Padding = UDim.new(0, 1)
+        oLy.Parent = oSc
+
+        for _, opt in ipairs(opts) do
+            local isSel = (opt == vLbl.Text)
+            local oB = Instance.new("TextButton")
+            oB.Size = UDim2.new(1, 0, 0, 25)
+            oB.BackgroundColor3 = Color3.fromRGB(56, 56, 56)
+            oB.BackgroundTransparency = isSel and 0.4 or 0.8
+            oB.BorderSizePixel = 0
+            oB.Text = ""
+            oB.AutoButtonColor = false
+            oB.ZIndex = 102
+            oB.Parent = oSc
+            Instance.new("UICorner", oB).CornerRadius = UDim.new(0, 4)
+
+            local oL = Instance.new("TextLabel")
+            oL.Size = UDim2.new(1, -12, 1, 0)
+            oL.Position = UDim2.new(0, 8, 0, 0)
+            oL.BackgroundTransparency = 1
+            oL.Text = opt
+            oL.TextColor3 = isSel and F.Accent or F.Text2
+            oL.TextSize = 10
+            oL.Font = Enum.Font.Gotham
+            oL.TextXAlignment = Enum.TextXAlignment.Left
+            oL.TextTruncate = Enum.TextTruncate.AtEnd
+            oL.ZIndex = 103
+            oL.Parent = oB
+
             oB.MouseButton1Click:Connect(function()
-                vLbl.Text=opt
+                vLbl.Text = opt
                 if cb then cb(opt) end
                 closeDD()
             end)
-            oB.InputBegan:Connect(function(inp)
-                if inp.UserInputType==Enum.UserInputType.MouseMovement or inp.UserInputType==Enum.UserInputType.Touch then
-                    TweenService:Create(oB,TweenInfo.new(0.1),{BackgroundTransparency=0.3}):Play()
-                end
+            
+            oB.MouseEnter:Connect(function()
+                TweenService:Create(oB, TweenInfo.new(0.1), {BackgroundTransparency = 0.3}):Play()
             end)
-            oB.InputEnded:Connect(function(inp)
-                if inp.UserInputType==Enum.UserInputType.MouseMovement or inp.UserInputType==Enum.UserInputType.Touch then
-                    if isSel then
-                        TweenService:Create(oB,TweenInfo.new(0.1),{BackgroundTransparency=0.4}):Play()
-                    else
-                        TweenService:Create(oB,TweenInfo.new(0.1),{BackgroundTransparency=0.8}):Play()
-                    end
-                end
+            oB.MouseLeave:Connect(function()
+                TweenService:Create(oB, TweenInfo.new(0.1), {BackgroundTransparency = isSel and 0.4 or 0.8}):Play()
             end)
         end
     end
+
     cbBtn.MouseButton1Click:Connect(openDDFn)
     return vLbl
 end
@@ -827,12 +1156,17 @@ end)
 section("Automation")
 
 toggle("Full Auto Raid", false, function(v)
-    S.FullAuto = v; S.BuyChip = v; S.StartRaid = v; S.DoRaid = v
+    S.FullAuto = v
+    S.BuyChip = v
+    S.StartRaid = v
+    S.DoRaid = v
     if v then
         notify("Full Auto", "Starting! (" .. S.SelectedChip .. ")", F.Ok)
         setStat("Starting full auto raid...")
         spawn(doFullRaid)
-    else stopAll() end
+    else
+        stopAll()
+    end
 end)
 
 toggle("Auto Buy Chip", false, function(v)
@@ -864,25 +1198,35 @@ slider("Retry Delay (sec)", 1, 30, 3, function(v) S.Delay = v end)
 section("Actions")
 
 btn("BUY CHIP NOW", F.Accent, function()
-    setStat("Buying chip..."); buyChip(); setStat("Chip attempt done")
+    setStat("Buying chip...")
+    buyChip()
+    setStat("Chip attempt done")
 end)
 
 btn("START RAID NOW", F.Ok, function()
-    setStat("Starting raid..."); startRaid(); setStat("Raid start done")
+    setStat("Starting raid...")
+    startRaid()
+    setStat("Raid start done")
 end)
 
 btn("STOP EVERYTHING", F.Bad, function()
-    stopAll(); notify("Stop", "All stopped", F.Bad)
+    stopAll()
+    notify("Stop", "All stopped", F.Bad)
 end)
 
--- === WATERMARK (Fluent - minimal) ===
+-- === WATERMARK ===
 local wm = Instance.new("TextLabel")
-wm.Size = UDim2.new(0,200,0,18); wm.Position = UDim2.new(0,10,1,-26)
-wm.BackgroundColor3 = F.Bg; wm.BackgroundTransparency = 0.4
-wm.Text = "Auto Raid v2  |  Fluent UI  |  Vxeze"; wm.TextColor3 = F.Text3
-wm.TextSize = 10; wm.Font = Enum.Font.GothamBold
-wm.TextXAlignment = Enum.TextXAlignment.Left; wm.Parent = sg
-Instance.new("UICorner",wm).CornerRadius = UDim.new(0,4)
+wm.Size = UDim2.new(0, 200, 0, 18)
+wm.Position = UDim2.new(0, 10, 1, -26)
+wm.BackgroundColor3 = F.Bg
+wm.BackgroundTransparency = 0.4
+wm.Text = "Auto Raid v2  |  Fluent UI  |  Vxeze"
+wm.TextColor3 = F.Text3
+wm.TextSize = 10
+wm.Font = Enum.Font.GothamBold
+wm.TextXAlignment = Enum.TextXAlignment.Left
+wm.Parent = sg
+Instance.new("UICorner", wm).CornerRadius = UDim.new(0, 4)
 
 -- === STARTUP ===
 notify("Auto Raid v2", "Fluent UI loaded!", F.Ok)
